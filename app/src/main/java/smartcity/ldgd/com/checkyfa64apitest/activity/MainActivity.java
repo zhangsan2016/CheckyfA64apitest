@@ -1,4 +1,4 @@
-package smartcity.ldgd.com.checkyfa64apitest;
+package smartcity.ldgd.com.checkyfa64apitest.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         initAdvertising();
 
         // 初始化串口
-       // initPort();
+        initPort();
 
       /*  RelativeLayout   scanCropView = (RelativeLayout) findViewById(R.id.capture_crop_view);
         ImageView  scanLine = (ImageView) findViewById(R.id.capture_scan_line);

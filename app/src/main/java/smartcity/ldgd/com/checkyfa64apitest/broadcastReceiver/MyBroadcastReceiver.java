@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import smartcity.ldgd.com.checkyfa64apitest.MainActivity;
+import smartcity.ldgd.com.checkyfa64apitest.activity.MainActivity;
 
 /**
  * Created by ldgd on 2019/11/12.
