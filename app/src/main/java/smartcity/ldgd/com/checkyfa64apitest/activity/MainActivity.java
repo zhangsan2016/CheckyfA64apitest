@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,12 +28,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
+import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback{
 
     private static final int STOP_FINGERPRINTVIEW = 11;
     private static final int START_FINGERPRINTVIEW = 12;
+    private static final int STOP_DEVICE_AND_CAMERA = 13;
+    private static final int START_DEVICE_AND_CAMERA = 14;
+    private static final String TAG = "MainActivity";
 
     // 要切换的照片，放在drawable文件夹下
     int[] images = {R.drawable.img1, R.drawable.img2, R.drawable.img3,};
@@ -48,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
     // 串口
     private SerialPort mSerialPort;
+    private SurfaceView scanPreview;
+    private SurfaceHolder mHolder;
+    private CameraManager mCameraManager;
 
     private Handler myHandler = new Handler() {
         @Override
@@ -56,17 +66,40 @@ public class MainActivity extends AppCompatActivity {
 
             switch (msg.what) {
                 case STOP_FINGERPRINTVIEW:
-                    fingerprintView.setVisibility(View.GONE);
-                    scanLine.clearAnimation();
+                    if (fingerprintView.getVisibility() == View.VISIBLE) {
+                        fingerprintView.setVisibility(View.GONE);
+                        scanLine.clearAnimation();
+                    }
                     break;
                 case START_FINGERPRINTVIEW:
-                    fingerprintView.setVisibility(View.VISIBLE);
-                    scanLine.startAnimation(animation);
+                    if (fingerprintView.getVisibility() == View.GONE) {
+                        fingerprintView.setVisibility(View.VISIBLE);
+                        scanLine.startAnimation(animation);
+                    }
+                    break;
+                case STOP_DEVICE_AND_CAMERA:
+                    if (fingerprintView.getVisibility() == View.VISIBLE) {
+                        fingerprintView.setVisibility(View.GONE);
+                        releaseCamera();
+
+                    }
+
+                    break;
+                case START_DEVICE_AND_CAMERA:
+                    if (fingerprintView.getVisibility() == View.GONE) {
+                        fingerprintView.setVisibility(View.VISIBLE);
+                        mHolder = scanPreview.getHolder();
+                        initCamera(mHolder);
+                        mHolder.addCallback(MainActivity.this);
+                        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+                    }
                     break;
             }
 
         }
     };
+    
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,13 +138,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
+        fingerprintView = (RelativeLayout) this.findViewById(R.id.view_fingerprint_capture);
+        scanPreview = (SurfaceView) findViewById(R.id.capture_preview);
+
+        // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
         animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.9f);
         animation.setDuration(3000);
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
 
-        fingerprintView = (RelativeLayout) this.findViewById(R.id.view_fingerprint_capture);
+        // 初始化相机
+        mHolder = scanPreview.getHolder();
+        mCameraManager = new CameraManager(getApplication());
 
     }
 
@@ -147,7 +186,12 @@ public class MainActivity extends AppCompatActivity {
                                 myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
                                 //   myHandler.removeCallbacksAndMessages(null);
                                 myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 2000);
+                            } else if (buffer[0] == 2) {
+                                myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+                                myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
                             }
+
+
                             write();
                         }
                     }
@@ -275,5 +319,42 @@ public class MainActivity extends AppCompatActivity {
                 handler.sendMessage(msg);
             }
         }, 0, 3000);
+    }
+
+    //region 初始化和回收相关资源
+    private void initCamera(SurfaceHolder surfaceHolder) {
+        try {
+            mCameraManager.openDriver(surfaceHolder);
+        } catch (IOException ioe) {
+            Log.e(TAG, "相机被占用", ioe);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Unexpected error initializing camera");
+        }
+
+    }
+
+    private void releaseCamera() {
+
+        //关闭相机
+        if (mCameraManager != null) {
+            mCameraManager.closeDriver();
+            mCameraManager = null;
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
     }
 }
