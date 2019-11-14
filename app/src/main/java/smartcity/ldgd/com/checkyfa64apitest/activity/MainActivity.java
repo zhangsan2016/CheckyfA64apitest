@@ -1,10 +1,10 @@
 package smartcity.ldgd.com.checkyfa64apitest.activity;
 
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -32,7 +32,7 @@ import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 
-public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback{
+public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final int STOP_FINGERPRINTVIEW = 11;
     private static final int START_FINGERPRINTVIEW = 12;
@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "MainActivity";
 
     // 要切换的照片，放在drawable文件夹下
-    int[] images = {R.drawable.img1, R.drawable.img2, R.drawable.img3,};
+    int[] images = {R.drawable.img4, R.drawable.img5};
+    // int[] images = {R.drawable.img1,R.drawable.img2,R.drawable.img3,R.drawable.img4, R.drawable.img5};
+
     // Message传递标志
     int SIGN = 17;
     // 照片索引
@@ -58,9 +60,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 串口
     private SerialPort mSerialPort;
+
+    // 相机显示
     private SurfaceView scanPreview;
     private SurfaceHolder mHolder;
     private CameraManager mCameraManager;
+    private Camera mCamera;
 
     private Handler myHandler = new Handler() {
         @Override
@@ -83,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 case STOP_DEVICE_AND_CAMERA:
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
                         deviceAndCameraView.setVisibility(View.GONE);
-                        releaseCamera();
+                        // releaseCamera();
+                        mCamera.stopPreview();
 
                     }
 
@@ -91,17 +97,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 case START_DEVICE_AND_CAMERA:
                     if (deviceAndCameraView.getVisibility() == View.GONE) {
                         deviceAndCameraView.setVisibility(View.VISIBLE);
-                        mHolder = scanPreview.getHolder();
-                        initCamera(mHolder);
-                        mHolder.addCallback(MainActivity.this);
-                        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+                        mCamera.startPreview();// 开启预览
+
                     }
                     break;
             }
 
         }
     };
-    
 
 
     @Override
@@ -114,11 +117,19 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
+    /*   int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
+       int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
+        float density =  Resources.getSystem().getDisplayMetrics().density;
+        LogUtil.e("height = " + height + "   width = " + width + "    density = " + density );*/
+
         // 初始化View
         initView();
 
         // 初始化广告
         initAdvertising();
+
+        // 初始化
+        //    initCamera();
 
         // 初始化串口
         initPort2();
@@ -153,9 +164,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
 
-        // 初始化相机
-        mHolder = scanPreview.getHolder();
-        mCameraManager = new CameraManager(getApplication());
 
     }
 
@@ -307,8 +315,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 // TODO Auto-generated method stub
                 super.handleMessage(msg);
                 if (msg.what == SIGN) {
-                    //    image.setImageResource(images[num++]);
-                    image.setBackgroundResource(images[num++]);
+                    image.setImageResource(images[num++]);
+                    //  image.setBackgroundResource(images[num++]);
                     if (num >= images.length) {
                         num = 0;
                     }
@@ -323,19 +331,30 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 msg.what = SIGN;
                 handler.sendMessage(msg);
             }
-        }, 0, 3000);
+        }, 0, 5000);
     }
 
     //region 初始化和回收相关资源
-    private void initCamera(SurfaceHolder surfaceHolder) {
+    private void initCamera() {
+
+        // 初始化相机
+        mHolder = scanPreview.getHolder();
+        mCameraManager = new CameraManager(getApplication());
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        mCamera = Camera.open();
+        Camera.Parameters p = mCamera.getParameters();
+        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        p.setPictureSize(320, 240);
+        mCamera.setParameters(p);
         try {
-            mCameraManager.openDriver(surfaceHolder);
-        } catch (IOException ioe) {
-            Log.e(TAG, "相机被占用", ioe);
-        } catch (RuntimeException e) {
+            mCamera.setPreviewDisplay(mHolder);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
-            Log.e(TAG, "Unexpected error initializing camera");
         }
+
 
     }
 
