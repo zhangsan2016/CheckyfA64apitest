@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.aill.androidserialport.SerialPort;
-import com.aill.androidserialport.SerialPortFinder;
 import com.example.yf_a64_api.YF_A64_API_Manager;
 
 import java.io.File;
@@ -25,12 +29,44 @@ import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int STOP_FINGERPRINTVIEW = 11;
+    private static final int START_FINGERPRINTVIEW = 12;
+
     // 要切换的照片，放在drawable文件夹下
     int[] images = {R.drawable.img1, R.drawable.img2, R.drawable.img3,};
     // Message传递标志
     int SIGN = 17;
     // 照片索引
     int num = 0;
+
+    // 指纹视图
+    private RelativeLayout fingerprintView;
+    // 指纹扫描线
+    private ImageView scanLine;
+    // 指纹扫描的动画
+    private TranslateAnimation animation;
+
+    // 串口
+    private SerialPort mSerialPort;
+
+    private Handler myHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what) {
+                case STOP_FINGERPRINTVIEW:
+                    fingerprintView.setVisibility(View.GONE);
+                    scanLine.clearAnimation();
+                    break;
+                case START_FINGERPRINTVIEW:
+                    fingerprintView.setVisibility(View.VISIBLE);
+                    scanLine.startAnimation(animation);
+                    break;
+            }
+
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,11 +78,18 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
+        // 初始化View
+        initView();
+
         // 初始化广告
         initAdvertising();
 
         // 初始化串口
-        initPort();
+        initPort2();
+
+        // 监听串口
+        initPortListening();
+
 
       /*  RelativeLayout   scanCropView = (RelativeLayout) findViewById(R.id.capture_crop_view);
         ImageView  scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -60,19 +103,83 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initView() {
+
+        scanLine = (ImageView) findViewById(R.id.capture_scan_line);
+        animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.9f);
+        animation.setDuration(3000);
+        animation.setRepeatCount(-1);
+        animation.setRepeatMode(Animation.RESTART);
+
+        fingerprintView = (RelativeLayout) this.findViewById(R.id.view_fingerprint_capture);
+
+    }
+
+    private void initPortListening() {
+
+        if (mSerialPort == null) {
+            Toast.makeText(this, "串口为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    /**
+                     * @param 1 串口路径
+                     * @param 2 波特率
+                     * @param 3 flags 给0就好
+                     */
+                    //从串口对象中获取输入流
+                    InputStream inputStream = mSerialPort.getInputStream();
+                    //使用循环读取数据，建议放到子线程去
+                    while (true) {
+                        if (inputStream.available() > 0) {
+                            //当接收到数据时，sleep 500毫秒（sleep时间自己把握）
+                            Thread.sleep(500);
+                            //sleep过后，再读取数据，基本上都是完整的数据
+                            byte[] buffer = new byte[inputStream.available()];
+                            int size = inputStream.read(buffer);
+                            LogUtil.e(" buffer = " + Arrays.toString(buffer));
+                            LogUtil.e(" buffer = " + new String(buffer, "utf-8"));
+                            if (buffer[0] == 1) {
+                                myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
+                                //   myHandler.removeCallbacksAndMessages(null);
+                                myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 2000);
+                            }
+                            write();
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+
+    private void initPort2() {
+
+        try {
+            // 打开/dev/ttyUSB0路径设备的串口
+            mSerialPort = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
+
+       /*      // 获取所有串口
+            SerialPortFinder serialPortFinder = new SerialPortFinder();
+            String[] devices = serialPortFinder.getAllDevicesPath();
+            LogUtil.e("String[] = " + "长度：" + devices.length + " " + Arrays.toString(devices));*/
+
+        } catch (Exception e) {
+
+        }
+
+
+    }
+
     private void initPort() {
-    /*  try {
-          // 打开/dev/ttyUSB0路径设备的串口
-          SerialPort mSerialPort = new SerialPort(new File("/dev/ttyUSB0"), 9600, 0);
-
-      } catch (IOException e) {
-          System.out.println("找不到该设备文件");
-      }*/
-
-        SerialPortFinder serialPortFinder = new SerialPortFinder();
-        String[] devices = serialPortFinder.getAllDevicesPath();
-        LogUtil.e("String[] = " + "长度：" + devices.length + " " + Arrays.toString(devices));
-
 
         YF_A64_API_Manager yfapi = new YF_A64_API_Manager(this);
         String nettyp0 = yfapi.yfgetUartPath("uart0");
@@ -87,12 +194,13 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                /**
-                 * @param 1 串口路径
-                 * @param 2 波特率
-                 * @param 3 flags 给0就好
-                 */
+
                 try {
+                    /**
+                     * @param 1 串口路径
+                     * @param 2 波特率
+                     * @param 3 flags 给0就好
+                     */
                     SerialPort serialPort = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
                     //从串口对象中获取输入流
                     InputStream inputStream = serialPort.getInputStream();
@@ -106,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                             int size = inputStream.read(buffer);
                             LogUtil.e(" buffer = " + Arrays.toString(buffer));
                             LogUtil.e(" buffer = " + new String(buffer));
+
                         }
                     }
                 } catch (IOException e) {
@@ -124,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             //从串口对象中获取输出流
             OutputStream outputStream = serialPort.getOutputStream();
             //需要写入的数据
-            byte[] data = new byte[10];
+            byte[] data = new byte[]{-18, 4, 5, 0, 0, 0, 0, 0, 14, 86, -105, 0, 17, 1, 123, 0, 0, 0, 3, -55, 0, 0, 0, -18, 46, -17};
             //写入数据
             // 写入数据
             try {
