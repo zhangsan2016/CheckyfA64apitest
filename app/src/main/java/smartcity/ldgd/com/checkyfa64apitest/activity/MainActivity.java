@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 指纹视图
     private RelativeLayout fingerprintView;
+    // 设备与相机视图
+    private LinearLayout deviceAndCameraView;
     // 指纹扫描线
     private ImageView scanLine;
     // 指纹扫描的动画
@@ -78,16 +81,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     }
                     break;
                 case STOP_DEVICE_AND_CAMERA:
-                    if (fingerprintView.getVisibility() == View.VISIBLE) {
-                        fingerprintView.setVisibility(View.GONE);
+                    if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
+                        deviceAndCameraView.setVisibility(View.GONE);
                         releaseCamera();
 
                     }
 
                     break;
                 case START_DEVICE_AND_CAMERA:
-                    if (fingerprintView.getVisibility() == View.GONE) {
-                        fingerprintView.setVisibility(View.VISIBLE);
+                    if (deviceAndCameraView.getVisibility() == View.GONE) {
+                        deviceAndCameraView.setVisibility(View.VISIBLE);
                         mHolder = scanPreview.getHolder();
                         initCamera(mHolder);
                         mHolder.addCallback(MainActivity.this);
@@ -139,7 +142,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void initView() {
 
         fingerprintView = (RelativeLayout) this.findViewById(R.id.view_fingerprint_capture);
+        deviceAndCameraView = (LinearLayout) this.findViewById(R.id.view_device_camera);
         scanPreview = (SurfaceView) findViewById(R.id.capture_preview);
+
 
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
