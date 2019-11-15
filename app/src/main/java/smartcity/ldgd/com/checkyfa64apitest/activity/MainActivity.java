@@ -106,15 +106,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         deviceAndCameraView.setVisibility(View.GONE);
                         // releaseCamera();
                         mCamera.stopPreview();
-
                     }
-
                     break;
                 case START_DEVICE_AND_CAMERA:
                     if (deviceAndCameraView.getVisibility() == View.GONE) {
                         deviceAndCameraView.setVisibility(View.VISIBLE);
                         mCamera.startPreview();// 开启预览
-
                     }
                     break;
             }
