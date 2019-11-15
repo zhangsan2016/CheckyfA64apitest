@@ -3,7 +3,6 @@ package smartcity.ldgd.com.checkyfa64apitest.activity;
 import android.Manifest;
 import android.app.AppOpsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Binder;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "MainActivity";
 
     // 要切换的照片，放在drawable文件夹下
-    int[] images = {R.drawable.img4, R.drawable.img5};
+    int[] images = {R.drawable.img55,R.drawable.img4, R.drawable.img5};
     // int[] images = {R.drawable.img1,R.drawable.img2,R.drawable.img3,R.drawable.img4, R.drawable.img5};
 
     // Message传递标志
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         initAdvertising();
 
         // 初始化摄像头
-        initCamera();
+      //  initCamera();
 
         // 初始化串口
         initPort2();
@@ -170,8 +169,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             //扫码
         }
 
-        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-        startActivityForResult(intent, 0);
+      /*  List<Camera.Size> previewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+        for (int i = 0; i < previewSizes.size(); i++) {
+            Camera.Size psize = previewSizes.get(i);
+            Log.e(TAG + "initCamera", "PreviewSize,width: " + psize.width + " height: " + psize.height);
+        }*/
+
+
 
     }
 
@@ -370,16 +374,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mCameraManager = new CameraManager(getApplication());
         mHolder.addCallback(this);
         //    mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        mCamera = Camera.open(0);
-     /*   Camera.Parameters p = mCamera.getParameters();
-        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        p.setPictureSize(358, 1920);
-        mCamera.setParameters(p);*/
+        mCamera = Camera.open();
+        Camera.Parameters p = mCamera.getParameters();
+      //  p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        p.setPictureSize(352, 288);
+        mCamera.setParameters(p);
 
         try {
             mCamera.setPreviewDisplay(mHolder);
             // 开始预览
             mCamera.startPreview();
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -473,10 +478,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void surfaceCreated(SurfaceHolder holder) {
 
         try {
-            if (mCamera != null) {
-                mCamera.setPreviewDisplay(holder);
-
-            }
+            mCameraManager.openDriver(holder);
         } catch (IOException e) {
             e.printStackTrace();
         }
