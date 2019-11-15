@@ -1,9 +1,19 @@
 package smartcity.ldgd.com.checkyfa64apitest.activity;
 
+import android.Manifest;
+import android.app.AppOpsManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,12 +28,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aill.androidserialport.SerialPort;
+import com.aill.androidserialport.SerialPortFinder;
 import com.example.yf_a64_api.YF_A64_API_Manager;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +46,7 @@ import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
+    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 26;
     private static final int STOP_FINGERPRINTVIEW = 11;
     private static final int START_FINGERPRINTVIEW = 12;
     private static final int STOP_DEVICE_AND_CAMERA = 13;
@@ -122,14 +135,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         float density =  Resources.getSystem().getDisplayMetrics().density;
         LogUtil.e("height = " + height + "   width = " + width + "    density = " + density );*/
 
+
+
         // 初始化View
         initView();
 
         // 初始化广告
         initAdvertising();
 
-        // 初始化
-        //    initCamera();
+        // 初始化摄像头
+        initCamera();
 
         // 初始化串口
         initPort2();
@@ -148,6 +163,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         animation.setRepeatMode(Animation.RESTART);
         scanLine.startAnimation(animation);*/
 
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
+        } else {
+            //扫码
+        }
+
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+        startActivityForResult(intent, 0);
+
     }
 
     private void initView() {
@@ -163,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         animation.setDuration(3000);
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
+
+        checkPermissionCamera();
 
 
     }
@@ -224,10 +251,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             // 打开/dev/ttyUSB0路径设备的串口
             mSerialPort = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
 
-       /*      // 获取所有串口
+            // 获取所有串口
             SerialPortFinder serialPortFinder = new SerialPortFinder();
             String[] devices = serialPortFinder.getAllDevicesPath();
-            LogUtil.e("String[] = " + "长度：" + devices.length + " " + Arrays.toString(devices));*/
+            LogUtil.e("String[] = " + "长度：" + devices.length + " " + Arrays.toString(devices));
 
         } catch (Exception e) {
 
@@ -261,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     SerialPort serialPort = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
                     //从串口对象中获取输入流
                     InputStream inputStream = serialPort.getInputStream();
+
                     //使用循环读取数据，建议放到子线程去
                     while (true) {
                         if (inputStream.available() > 0) {
@@ -341,15 +369,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mHolder = scanPreview.getHolder();
         mCameraManager = new CameraManager(getApplication());
         mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        mCamera = Camera.open();
-        Camera.Parameters p = mCamera.getParameters();
+        //    mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mCamera = Camera.open(0);
+     /*   Camera.Parameters p = mCamera.getParameters();
         p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        p.setPictureSize(320, 240);
-        mCamera.setParameters(p);
+        p.setPictureSize(358, 1920);
+        mCamera.setParameters(p);*/
+
         try {
             mCamera.setPreviewDisplay(mHolder);
+            // 开始预览
+            mCamera.startPreview();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -368,17 +398,98 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CAMERA: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    finish();
+
+                } else {
+                    finish();
+                }
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    //region 检查权限
+    private boolean isOpenCamera;
+
+    private void checkPermissionCamera() {
+        int checkPermission = 0;
+        if (Build.VERSION.SDK_INT >= 23) {
+            // checkPermission =ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA);
+            checkPermission = PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA);
+            if (checkPermission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+            } else {
+                isOpenCamera = true;
+            }
+
+        } else {
+            checkPermission = checkPermission(26);
+            if (checkPermission == AppOpsManager.MODE_ALLOWED) {
+                isOpenCamera = true;
+            } else if (checkPermission == AppOpsManager.MODE_IGNORED) {
+                isOpenCamera = false;
+            }
+        }
+    }
+
+
+    /**
+     * 反射调用系统权限,判断权限是否打开
+     *
+     * @param permissionCode 相应的权限所对应的code
+     * @see {@link AppOpsManager }
+     */
+    private int checkPermission(int permissionCode) {
+        int checkPermission = 0;
+        if (Build.VERSION.SDK_INT >= 19) {
+            AppOpsManager _manager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+            try {
+                Class<?>[] types = new Class[]{int.class, int.class, String.class};
+                Object[] args = new Object[]{permissionCode, Binder.getCallingUid(), getPackageName()};
+                Method method = _manager.getClass().getDeclaredMethod("noteOp", types);
+                method.setAccessible(true);
+                Object _o = method.invoke(_manager, args);
+                if ((_o instanceof Integer)) {
+                    checkPermission = (Integer) _o;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            checkPermission = 0;
+        }
+        return checkPermission;
+    }
+
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
+
+        try {
+            if (mCamera != null) {
+                mCamera.setPreviewDisplay(holder);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+        //SurfaceView的尺寸发生改变
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        //SurfaceView开始销毁
     }
 }
