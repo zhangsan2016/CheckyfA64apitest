@@ -5,6 +5,8 @@
     android:versionName="1.0" 
     android:sharedUserId="android.uid.system">
 
+    <!-- yfA64广告屏 Demo-->
+
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="21" />
