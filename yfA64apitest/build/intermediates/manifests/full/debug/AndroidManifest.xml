@@ -3,8 +3,7 @@
     package="com.yf.yfa64apitest"
     android:sharedUserId="android.uid.system"
     android:versionCode="1"
-    android:versionName="1.0" >
-
+    android:versionName="1.0" > <!-- yfA64广告屏 Demo -->
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="21" />

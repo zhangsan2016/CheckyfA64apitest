@@ -23,6 +23,6 @@
     <include
         android:id="@+id/view_device_camera"
         layout="@layout/device_and_camera"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>
