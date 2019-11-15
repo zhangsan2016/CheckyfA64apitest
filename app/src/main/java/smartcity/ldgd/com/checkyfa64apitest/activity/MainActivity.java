@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         initAdvertising();
 
         // 初始化摄像头
-        //  initCamera();
+          initCamera();
 
         // 初始化串口
         initPort2();
@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
     }
+
 
     private void initView() {
 
@@ -412,8 +413,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             e.printStackTrace();
         }
 
-
     }
+
+
+
+
+
 
     private void releaseCamera() {
 
