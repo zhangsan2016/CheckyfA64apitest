@@ -41,7 +41,9 @@ import java.util.TimerTask;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
+import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
+import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -53,13 +55,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "MainActivity";
 
     // 要切换的照片，放在drawable文件夹下
-    int[] images = {R.drawable.img55,R.drawable.img4, R.drawable.img5};
+    int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
     // int[] images = {R.drawable.img1,R.drawable.img2,R.drawable.img3,R.drawable.img4, R.drawable.img5};
 
     // Message传递标志
     int SIGN = 17;
     // 照片索引
     int num = 0;
+    // 设备参数信息类
+   private LdDevice ldDevice = new LdDevice();
 
     // 指纹视图
     private RelativeLayout fingerprintView;
@@ -135,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         LogUtil.e("height = " + height + "   width = " + width + "    density = " + density );*/
 
 
-
         // 初始化View
         initView();
 
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         initAdvertising();
 
         // 初始化摄像头
-      //  initCamera();
+        //  initCamera();
 
         // 初始化串口
         initPort2();
@@ -174,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             Camera.Size psize = previewSizes.get(i);
             Log.e(TAG + "initCamera", "PreviewSize,width: " + psize.width + " height: " + psize.height);
         }*/
-
 
 
     }
@@ -220,19 +222,42 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     while (true) {
                         if (inputStream.available() > 0) {
                             //当接收到数据时，sleep 500毫秒（sleep时间自己把握）
-                            Thread.sleep(500);
+                            Thread.sleep(100);
                             //sleep过后，再读取数据，基本上都是完整的数据
                             byte[] buffer = new byte[inputStream.available()];
                             int size = inputStream.read(buffer);
                             LogUtil.e(" buffer = " + Arrays.toString(buffer));
                             LogUtil.e(" buffer = " + new String(buffer, "utf-8"));
-                            if (buffer[0] == 1) {
+
+                          /*  if (buffer[0] == 1) {
                                 myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
                                 //   myHandler.removeCallbacksAndMessages(null);
                                 myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 2000);
                             } else if (buffer[0] == 2) {
                                 myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
                                 myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
+                            }*/
+
+                            // 解析指令(判断功能吗)
+                            if (buffer[2] == 5) {
+                                LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
+                                //  获取电参
+                                ldDevice.setVoltage( MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]}));
+                                ldDevice.setElectricity(MyByteUtil.bytesIntHL(new byte[]{buffer[11], buffer[12]}));
+                                ldDevice.setPower(MyByteUtil.bytesIntHL(new byte[]{buffer[13], buffer[14]}));
+                                ldDevice.setElectricalEnergy(MyByteUtil.bytesIntHL(new byte[]{buffer[15], buffer[16], buffer[17]}));
+                                ldDevice.setPower(MyByteUtil.bytesIntHL(new byte[]{buffer[18], buffer[19]}));
+                                ldDevice.setLeakCurrent(MyByteUtil.bytesIntHL(new byte[]{buffer[20], buffer[21]}));
+                                ldDevice.setAlarmStatus(buffer[22]);
+                                LogUtil.e("ldDevice = " + ldDevice.toString());
+
+                            }else if(buffer[2] == 1){
+                                LogUtil.e(" 红外启动 = " + Arrays.toString(buffer));
+                            }else if(buffer[2] == 2){
+                                LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
+                                myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
+                                //   myHandler.removeCallbacksAndMessages(null);
+                                myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 2000);
                             }
 
 
@@ -376,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         //    mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mCamera = Camera.open();
         Camera.Parameters p = mCamera.getParameters();
-      //  p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        //  p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         p.setPictureSize(352, 288);
         mCamera.setParameters(p);
 
