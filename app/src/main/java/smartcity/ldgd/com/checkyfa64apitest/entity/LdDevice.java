@@ -9,70 +9,68 @@ package smartcity.ldgd.com.checkyfa64apitest.entity;
 public class LdDevice {
 
     // 电压
-    private float voltage;
+    private double voltage;
     // 电流
-    private float electricity;
+    private double electricity;
     // 功率
-    private float power;
+    private double power;
     // 电能
-    private float electricalEnergy;
+    private double electricalEnergy;
     // 功率因数
-    private float powerFactor;
-    // 漏电流
-    private float leakCurrent;
+    private double powerFactor;
+    // 漏电电流
+    private double leakCurrent;
     // 报警状态
     private int alarmStatus;
 
 
-
-    public float getVoltage() {
+    public double getVoltage() {
         return voltage;
     }
 
-    public void setVoltage(float voltage) {
+    public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
 
-    public float getElectricity() {
+    public double getElectricity() {
         return electricity;
     }
 
-    public void setElectricity(float electricity) {
+    public void setElectricity(double electricity) {
         this.electricity = electricity;
     }
 
-    public float getPower() {
+    public double getPower() {
         return power;
     }
 
-    public void setPower(float power) {
+    public void setPower(double power) {
         this.power = power;
     }
 
-    public float getElectricalEnergy() {
+    public double getElectricalEnergy() {
         return electricalEnergy;
     }
 
-    public void setElectricalEnergy(float electricalEnergy) {
+    public void setElectricalEnergy(double electricalEnergy) {
         this.electricalEnergy = electricalEnergy;
     }
 
-    public float getPowerFactor() {
+    public double getPowerFactor() {
         return powerFactor;
     }
 
-    public void setPowerFactor(float powerFactor) {
+    public void setPowerFactor(double powerFactor) {
         this.powerFactor = powerFactor;
     }
 
-    public float getLeakCurrent() {
+    public double getLeakCurrent() {
         return leakCurrent;
     }
 
-    public void setLeakCurrent(float leakCurrent) {
+    public void setLeakCurrent(double leakCurrent) {
         this.leakCurrent = leakCurrent;
     }
-
 
     public int getAlarmStatus() {
         return alarmStatus;

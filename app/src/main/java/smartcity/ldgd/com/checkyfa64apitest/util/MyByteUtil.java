@@ -37,9 +37,9 @@ public class MyByteUtil {
             int d = (bytes[3] & 0xff);
             result = a | b | c | d;
         }else if(bytes.length == 3){
-            int a = (bytes[0] & 0xff) << 24;
-            int b = (bytes[1] & 0xff) << 16;
-            int c = (bytes[2] & 0xff) << 8;
+            int a = (bytes[0] & 0xff) << 16;
+            int b = (bytes[1] & 0xff) << 8;
+            int c = (bytes[2] & 0xff);
             result = a | b | c ;
         } else if(bytes.length == 2){
             int a = (bytes[0] & 0xff) <<  8;
@@ -47,5 +47,16 @@ public class MyByteUtil {
             result = a | b;
         }
         return result;
+    }
+
+
+    /**
+     * 二进制按位获取
+     * @param num:要获取二进制值的数
+     * @param index:倒数第一位为0，依次类推
+     */
+    public static int bitget(int num, int index)
+    {
+        return (num & (0x1 << index)) >> index;
     }
 }

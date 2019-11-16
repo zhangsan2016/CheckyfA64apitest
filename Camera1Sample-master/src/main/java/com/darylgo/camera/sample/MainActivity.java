@@ -27,6 +27,8 @@ import android.widget.Button;
 import java.io.IOException;
 import java.util.List;
 
+import static com.darylgo.camera.sample.R.id.switch_camera;
+
 public class MainActivity extends AppCompatActivity implements Handler.Callback {
 
     private static final int MSG_OPEN_CAMERA = 1;
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         SurfaceView cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
         cameraPreview.getHolder().addCallback(new PreviewSurfaceCallback());
 
-        Button switchCameraButton = (Button) findViewById(R.id.switch_camera);
+        Button switchCameraButton = (Button) findViewById(switch_camera);
         switchCameraButton.setOnClickListener(new OnSwitchCameraButtonClickListener());
 
         Button takePictureButton = (Button) findViewById(R.id.take_picture);
@@ -151,10 +153,15 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         // 动态权限检查
         if (!isRequiredPermissionsGranted() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_PERMISSIONS_CODE);
+
         } else if (mCameraHandler != null) {
-            mCameraHandler.obtainMessage(MSG_OPEN_CAMERA, getCameraId(), 0).sendToTarget();
+            //        mCameraHandler.obtainMessage(MSG_OPEN_CAMERA, getCameraId(), 0).sendToTarget();
+            mCameraHandler.sendEmptyMessage(MSG_STOP_PREVIEW);// 停止预览
+            mCameraHandler.sendEmptyMessage(MSG_CLOSE_CAMERA);// 关闭当前的摄像头
+            mCameraHandler.obtainMessage(MSG_OPEN_CAMERA, 0, 0).sendToTarget();// 开启新的摄像头
         }
     }
+
 
     @Override
     protected void onPause() {
@@ -267,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
                 mFrontCameraInfo = cameraInfo;
             }
         }
+
     }
 
     /**

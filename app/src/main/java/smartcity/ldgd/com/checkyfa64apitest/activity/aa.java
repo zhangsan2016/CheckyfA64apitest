@@ -1,64 +1,59 @@
 package smartcity.ldgd.com.checkyfa64apitest.activity;
 
-import android.app.Activity;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraDevice.StateCallback;
-import android.hardware.camera2.CameraManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-
 /**
  * Created by ldgd on 2019/11/14.
  * 功能：
  * 说明：
  */
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class aa extends Activity {
+public class aa   {
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+    public static void main(String[] args) {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(bitget(31,i));
+        }
+
+
+     //   System.out.println(bytesIntHL(new byte[]{4, -49}));
 
     }
 
-    private CameraManager mCameraManager;
-    private int mCameraID;
-    public final int BACK_CAMERA = 0; //后置摄像头的CameraId，默认的mCameraID
+    //高位在前，低位在后，区分byte长度
+    public static int bytesIntHL(byte[] bytes) {
+        int result = 0;
+        if (bytes.length == 4) {
+            int a = (bytes[0] & 0xff) << 24;//说明二
+            int b = (bytes[1] & 0xff) << 16;
+            int c = (bytes[2] & 0xff) << 8;
+            int d = (bytes[3] & 0xff);
+            result = a | b | c | d;
+        }else if(bytes.length == 3){
+            int a = (bytes[0] & 0xff) << 16;
+            int b = (bytes[1] & 0xff) << 8;
+            int c = (bytes[2] & 0xff);
+            result = a | b | c ;
+        } else if(bytes.length == 2){
+            int a = (bytes[0] & 0xff) <<  8;
+            int b = (bytes[1] & 0xff);
+            result = a | b;
+        }
+        return result;
+    }
 
     /**
-     * 摄像头创建监听，获得摄像头状态stateCallback
+     * 二进制按位获取
+     * @param num:要获取二进制值的数
+     * @param index:倒数第一位为0，依次类推
      */
-    private StateCallback stateCallback = new StateCallback() {
-
-        @Override
-        public void onOpened(@NonNull CameraDevice camera) {
-
-        }
-
-        @Override
-        public void onDisconnected(@NonNull CameraDevice camera) {
-
-        }
-
-        @Override
-        public void onError(CameraDevice camera, int error) {
-
-        }
-    };
+    public static int bitget(int num, int index)
+    {
+        return (num & (0x1 << index)) >> index;
+    }
 
 
 
 
-  /*  //获取摄像头管理
-    mCameraManager =(CameraManager)getSystemService(Context.CAMERA_SERVICE);
-//打开摄像头
-
-mCameraManager.openCamera(mCameraID + "", stateCallback, mainHandler);*/
 
 
 }
