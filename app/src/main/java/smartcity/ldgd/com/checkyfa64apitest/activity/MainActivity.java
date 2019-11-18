@@ -3,16 +3,15 @@ package smartcity.ldgd.com.checkyfa64apitest.activity;
 import android.Manifest;
 import android.app.AppOpsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.aill.androidserialport.SerialPort;
 import com.aill.androidserialport.SerialPortFinder;
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 相机显示
     private SurfaceView scanPreview;
+    private VideoView videoView;
     private SurfaceHolder mHolder;
     private CameraManager mCameraManager;
     private Camera mCamera;
@@ -104,11 +105,18 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     if (fingerprintView.getVisibility() == View.GONE) {
                         fingerprintView.setVisibility(View.VISIBLE);
                         scanLine.startAnimation(animation);
+                        // 隐藏其他界面
+                        deviceAndCameraView.setVisibility(View.GONE);
+
+
                     }
                     break;
                 case STOP_DEVICE_AND_CAMERA:
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
                         deviceAndCameraView.setVisibility(View.GONE);
+                        // 摄像头关闭预览
+                        videoView.pause();
+
                         // releaseCamera();
                         //        mCamera.stopPreview();
                     }
@@ -117,7 +125,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
                     if (deviceAndCameraView.getVisibility() == View.GONE) {
+                        // 显示设备与相机界面
                         deviceAndCameraView.setVisibility(View.VISIBLE);
+                        // 隐藏其他界面
+                        fingerprintView.setVisibility(View.GONE);
+                        // 摄像头开启预览
+                        videoView.start();
+
 
                          // 更新界面电参
                         tv_voltage.setText((ldDevice.getVoltage() / 100) + " V");
@@ -202,11 +216,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         scanLine.startAnimation(animation);*/
 
 
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+       /* if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
         } else {
             //扫码
-        }
+        }*/
 
       /*  List<Camera.Size> previewSizes = mCamera.getParameters().getSupportedPreviewSizes();
         for (int i = 0; i < previewSizes.size(); i++) {
@@ -214,8 +228,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             Log.e(TAG + "initCamera", "PreviewSize,width: " + psize.width + " height: " + psize.height);
         }*/
 
-        Intent intent = new Intent(this, rtspActivity.class);
-        startActivity(intent);
+/*       Intent intent = new Intent(this, rtspActivity.class);
+        startActivity(intent);*/
 
     }
 
@@ -232,6 +246,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_power_factor = (TextView) this.findViewById(R.id.tv_power_factor);
         tv_leak_curt = (TextView) this.findViewById(R.id.tv_leak_curt);
         tv_alarm_status = (TextView) this.findViewById(R.id.tv_alarm_status);
+        videoView = (VideoView) this.findViewById(R.id.video_view);
+
+        videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
+        videoView.requestFocus();
 
 
         // 初始化动画
