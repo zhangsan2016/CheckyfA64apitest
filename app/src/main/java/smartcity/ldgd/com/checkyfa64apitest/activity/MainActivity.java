@@ -3,6 +3,7 @@ package smartcity.ldgd.com.checkyfa64apitest.activity;
 import android.Manifest;
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Binder;
@@ -109,45 +110,46 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
                         deviceAndCameraView.setVisibility(View.GONE);
                         // releaseCamera();
-                //        mCamera.stopPreview();
+                        //        mCamera.stopPreview();
                     }
                     break;
                 case START_DEVICE_AND_CAMERA:
-                    // 跟新界面电参
-                    tv_voltage.setText((ldDevice.getVoltage() / 100) + " V");
-                    tv_electricity.setText((ldDevice.getElectricity() / 100) + " A");
-                    tv_power.setText((ldDevice.getPower() / 10) + " W");
-                    tv_energy.setText((int) ldDevice.getElectricalEnergy() + " Kw.h");
-                    tv_power_factor.setText((ldDevice.getPowerFactor() / 1000) + "");
-                    tv_leak_curt.setText((int) (ldDevice.getLeakCurrent()) + " mA");
 
-                    StringBuffer sb = new StringBuffer();
-                    if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 0) == 1) {
-                        sb.append("[过流报警]");
-                    }
-                    if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 1) == 1) {
-                        sb.append("[漏电报警]");
-                    }
-                    if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 2) == 1) {
-                        sb.append("[漏电报警]");
-                    }
-                    if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 3) == 1) {
-                        sb.append("[欠压报警]");
-                    }
-                    if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 4) == 1) {
-                        sb.append("[欠流报警]");
-                    }
-                    if (sb.toString().equals("")) {
-                        sb.append("正常");
-                    }
-                    tv_alarm_status.setText(sb.toString());
-                    //    tv_alarm_status.setTextColor("");
 
                     if (deviceAndCameraView.getVisibility() == View.GONE) {
                         deviceAndCameraView.setVisibility(View.VISIBLE);
 
+                         // 更新界面电参
+                        tv_voltage.setText((ldDevice.getVoltage() / 100) + " V");
+                        tv_electricity.setText((ldDevice.getElectricity() / 100) + " A");
+                        tv_power.setText((ldDevice.getPower() / 10) + " W");
+                        tv_energy.setText((int) ldDevice.getElectricalEnergy() + " Kw.h");
+                        tv_power_factor.setText((ldDevice.getPowerFactor() / 1000) + "");
+                        tv_leak_curt.setText((int) (ldDevice.getLeakCurrent()) + " mA");
 
-                        mCamera.startPreview();// 开启预览
+                        StringBuffer sb = new StringBuffer();
+                        if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 0) == 1) {
+                            sb.append("[过流报警]");
+                        }
+                        if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 1) == 1) {
+                            sb.append("[漏电报警]");
+                        }
+                        if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 2) == 1) {
+                            sb.append("[漏电报警]");
+                        }
+                        if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 3) == 1) {
+                            sb.append("[欠压报警]");
+                        }
+                        if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 4) == 1) {
+                            sb.append("[欠流报警]");
+                        }
+                        if (sb.toString().equals("")) {
+                            sb.append("正常");
+                        }
+                        tv_alarm_status.setText(sb.toString());
+                       // tv_alarm_status.setTextColor();
+
+                     //   mCamera.startPreview();// 开启预览
 
                     }
                     break;
@@ -212,6 +214,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             Log.e(TAG + "initCamera", "PreviewSize,width: " + psize.width + " height: " + psize.height);
         }*/
 
+        Intent intent = new Intent(this, rtspActivity.class);
+        startActivity(intent);
 
     }
 
@@ -307,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                                 myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
                                 myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
                                 //   myHandler.removeCallbacksAndMessages(null);
-                                myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 3000);
+                                myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
 
                             } else if (buffer[2] == 2) {
                                 LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));

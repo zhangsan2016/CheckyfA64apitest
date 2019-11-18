@@ -18,6 +18,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.rtspActivity"></activity>
+
         <!--注册接收系统开机广播消息的广播接收者-->
         <receiver
             android:name=".broadcastReceiver.MyBroadcastReceiver"
@@ -28,6 +30,8 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+
+
 
     </application>
 
@@ -45,7 +49,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
 
