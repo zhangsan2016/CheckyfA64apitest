@@ -24,10 +24,10 @@ public class rtspActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viedo);
+        setContentView(R.layout.aa);
 
-        videoView = (VideoView)this.findViewById(R.id.rtsp_player);
-        PlayRtspStream(rtspUrl);
+       // videoView = (VideoView)this.findViewById(R.id.rtsp_player);
+     //   PlayRtspStream(rtspUrl);
 
     }
 

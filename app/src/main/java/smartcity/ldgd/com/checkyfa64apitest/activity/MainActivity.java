@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
                         deviceAndCameraView.setVisibility(View.GONE);
                         // 摄像头关闭预览
-                        videoView.pause();
+                     //   videoView.stopPlayback();
 
                         // releaseCamera();
                         //        mCamera.stopPreview();
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             Log.e(TAG + "initCamera", "PreviewSize,width: " + psize.width + " height: " + psize.height);
         }*/
 
-/*       Intent intent = new Intent(this, rtspActivity.class);
+/*     Intent intent = new Intent(this, rtspActivity.class);
         startActivity(intent);*/
 
     }
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         videoView = (VideoView) this.findViewById(R.id.video_view);
 
         videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
-        videoView.requestFocus();
+  //      videoView.requestFocus();
 
 
         // 初始化动画
