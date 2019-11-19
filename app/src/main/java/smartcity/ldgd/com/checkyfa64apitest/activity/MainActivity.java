@@ -45,6 +45,7 @@ import java.util.TimerTask;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
+import smartcity.ldgd.com.checkyfa64apitest.crc.CheckCRC;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
                         deviceAndCameraView.setVisibility(View.GONE);
                         // 摄像头关闭预览
-                     //   videoView.stopPlayback();
+                        //   videoView.stopPlayback();
 
                         // releaseCamera();
                         //        mCamera.stopPreview();
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 case START_DEVICE_AND_CAMERA:
 
                     if (fingerprintView.getVisibility() == View.VISIBLE) {
-                       return;
+                        return;
                     }
 
 
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         fingerprintView.setVisibility(View.GONE);
 
 
-                         // 更新界面电参
+                        // 更新界面电参
                         tv_voltage.setText((ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText((ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText((ldDevice.getPower() / 10) + " W");
@@ -164,9 +165,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             sb.append("正常");
                         }
                         tv_alarm_status.setText(sb.toString());
-                       // tv_alarm_status.setTextColor();
+                        // tv_alarm_status.setTextColor();
 
-                     //   mCamera.startPreview();// 开启预览
+                        //   mCamera.startPreview();// 开启预览
 
                     }
                     break;
@@ -303,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             //sleep过后，再读取数据，基本上都是完整的数据
                             byte[] buffer = new byte[inputStream.available()];
                             int size = inputStream.read(buffer);
-                           LogUtil.e(" buffer = " + Arrays.toString(buffer));
+                            LogUtil.e(" buffer = " + Arrays.toString(buffer));
 //                            LogUtil.e(" buffer = " + new String(buffer, "utf-8"));
 
                           /*  if (buffer[0] == 1) {
@@ -335,7 +336,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void run() {
                 if (buffer.length <= 2) {
-                    return ;
+                    return;
+                }
+
+                // 校验CRC
+                boolean checkCrc = CheckCRC.checkTheCrc(
+                        Arrays.copyOfRange(buffer, 5, 47),
+                        Arrays.copyOfRange(buffer, 47, 49));
+                if(!checkCrc){
+                    return;
                 }
 
                 // 解析指令(判断功能吗)
