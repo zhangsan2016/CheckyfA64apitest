@@ -14,7 +14,6 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
-
     <include
         android:id="@+id/view_fingerprint_capture"
         layout="@layout/fingerprint_capture"

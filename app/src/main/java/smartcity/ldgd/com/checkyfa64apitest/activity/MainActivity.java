@@ -123,14 +123,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     break;
                 case START_DEVICE_AND_CAMERA:
 
+                    if (fingerprintView.getVisibility() == View.VISIBLE) {
+                       return;
+                    }
+
 
                     if (deviceAndCameraView.getVisibility() == View.GONE) {
                         // 显示设备与相机界面
                         deviceAndCameraView.setVisibility(View.VISIBLE);
                         // 隐藏其他界面
                         fingerprintView.setVisibility(View.GONE);
-                        // 摄像头开启预览
-                        videoView.start();
 
 
                          // 更新界面电参
@@ -248,10 +250,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_alarm_status = (TextView) this.findViewById(R.id.tv_alarm_status);
         videoView = (VideoView) this.findViewById(R.id.video_view);
 
-        videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
-  //      videoView.requestFocus();
-
-
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
         animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.9f);
@@ -261,7 +259,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         checkPermissionCamera();
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 摄像头开启预览
+        videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
+        videoView.requestFocus();
+        videoView.start();
     }
 
     private void initPortListening() {
@@ -290,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             //sleep过后，再读取数据，基本上都是完整的数据
                             byte[] buffer = new byte[inputStream.available()];
                             int size = inputStream.read(buffer);
-//                            LogUtil.e(" buffer = " + Arrays.toString(buffer));
+                           LogUtil.e(" buffer = " + Arrays.toString(buffer));
 //                            LogUtil.e(" buffer = " + new String(buffer, "utf-8"));
 
                           /*  if (buffer[0] == 1) {
@@ -302,51 +308,60 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                                 myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
                             }*/
 
-                            if (buffer.length <= 2) {
-                                return;
-                            }
+                            parseBytes(buffer);
 
-                            // 解析指令(判断功能吗)
-                            if (buffer[2] == 5) {
-
-                                LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
-                                //  获取电参
-                                ldDevice.setVoltage((MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]})));
-                                ldDevice.setElectricity(MyByteUtil.bytesIntHL(new byte[]{buffer[11], buffer[12]}));
-                                ldDevice.setPower(MyByteUtil.bytesIntHL(new byte[]{buffer[13], buffer[14]}));
-                                ldDevice.setElectricalEnergy(MyByteUtil.bytesIntHL(new byte[]{buffer[15], buffer[16], buffer[17]}));
-                                ldDevice.setPowerFactor(MyByteUtil.bytesIntHL(new byte[]{buffer[18], buffer[19]}));
-                                ldDevice.setLeakCurrent(MyByteUtil.bytesIntHL(new byte[]{buffer[20], buffer[21]}));
-                                ldDevice.setAlarmStatus(buffer[22]);
-
-
-                                LogUtil.e("ldDevice = " + ldDevice.toString());
-
-                                myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
-
-                            } else if (buffer[2] == 1) {
-                                LogUtil.e(" 红外启动 = " + Arrays.toString(buffer));
-                                myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
-                                myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
-                                //   myHandler.removeCallbacksAndMessages(null);
-                                myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
-
-                            } else if (buffer[2] == 2) {
-                                LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
-                                myHandler.removeMessages(STOP_FINGERPRINTVIEW);
-                                myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
-                                //   myHandler.removeCallbacksAndMessages(null);
-                                myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 3000);
-                            }
-
-
-                            write();
+                            // write();
                         }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void parseBytes(final byte[] buffer) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (buffer.length <= 2) {
+                    return ;
+                }
+
+                // 解析指令(判断功能吗)
+                if (buffer[2] == 5) {
+
+                    LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
+                    //  获取电参
+                    ldDevice.setVoltage((MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]})));
+                    ldDevice.setElectricity(MyByteUtil.bytesIntHL(new byte[]{buffer[11], buffer[12]}));
+                    ldDevice.setPower(MyByteUtil.bytesIntHL(new byte[]{buffer[13], buffer[14]}));
+                    ldDevice.setElectricalEnergy(MyByteUtil.bytesIntHL(new byte[]{buffer[15], buffer[16], buffer[17]}));
+                    ldDevice.setPowerFactor(MyByteUtil.bytesIntHL(new byte[]{buffer[18], buffer[19]}));
+                    ldDevice.setLeakCurrent(MyByteUtil.bytesIntHL(new byte[]{buffer[20], buffer[21]}));
+                    ldDevice.setAlarmStatus(buffer[22]);
+
+
+                    LogUtil.e("ldDevice = " + ldDevice.toString());
+
+                    //   myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+
+                } else if (buffer[2] == 1) {
+                    LogUtil.e(" 红外启动 = " + Arrays.toString(buffer));
+                    myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
+                    myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+                    //   myHandler.removeCallbacksAndMessages(null);
+                    myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
+
+                } else if (buffer[2] == 2) {
+                    LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
+                    myHandler.removeMessages(STOP_FINGERPRINTVIEW);
+                    myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
+                    //   myHandler.removeCallbacksAndMessages(null);
+                    myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 500);
                 }
             }
         }).start();
