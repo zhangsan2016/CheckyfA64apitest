@@ -5,6 +5,7 @@ import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -267,6 +268,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 摄像头开启预览
         videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
         videoView.requestFocus();
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                return true;
+            }
+        });
         videoView.start();
     }
 
@@ -482,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 msg.what = SIGN;
                 handler.sendMessage(msg);
             }
-        }, 0, 5000);
+        }, 50, 5000);
     }
 
     //region 初始化和回收相关资源
