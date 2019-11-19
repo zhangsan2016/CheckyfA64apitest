@@ -45,7 +45,6 @@ import java.util.TimerTask;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
-import smartcity.ldgd.com.checkyfa64apitest.crc.CheckCRC;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
@@ -267,8 +266,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     protected void onResume() {
         super.onResume();
         // 摄像头开启预览
-        videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
-        videoView.requestFocus();
+        videoView.setVideoURI(Uri.parse("rtsp://192.168.1.72:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
+
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -276,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
         videoView.start();
+        videoView.requestFocus();
     }
 
     private void initPortListening() {
@@ -340,12 +340,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }
 
                 // 校验CRC
-                boolean checkCrc = CheckCRC.checkTheCrc(
+              /*  boolean checkCrc = CheckCRC.checkTheCrc(
                         Arrays.copyOfRange(buffer, 5, 47),
                         Arrays.copyOfRange(buffer, 47, 49));
                 if(!checkCrc){
                     return;
-                }
+                }*/
 
                 // 解析指令(判断功能吗)
                 if (buffer[2] == 5) {
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     myHandler.removeMessages(STOP_FINGERPRINTVIEW);
                     myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
                     //   myHandler.removeCallbacksAndMessages(null);
-                    myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 500);
+                    myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 3000);
                 }
             }
         }).start();
