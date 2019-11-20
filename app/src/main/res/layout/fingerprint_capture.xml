@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-<!--
-    <SurfaceView
-        android:id="@+id/capture_preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
--->
+    <!--
+        <SurfaceView
+            android:id="@+id/capture_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    -->
 
     <RelativeLayout
         android:id="@+id/capture_container"
@@ -50,6 +50,18 @@
                 android:src="@drawable/scan_line"
                 android:visibility="visible" />
         </RelativeLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/capture_crop_view"
+            android:padding="30dp"
+            android:text="    您好正在连接应急中心   为了保证求助信息真实性您的个人信息已存证（人脸、指纹）"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="28sp" />
+
 
         <ImageView
             android:id="@+id/capture_mask_bottom"
