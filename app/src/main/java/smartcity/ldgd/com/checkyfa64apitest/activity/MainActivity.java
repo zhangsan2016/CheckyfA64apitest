@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
                     myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
                     //   myHandler.removeCallbacksAndMessages(null);
-                    myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 5000);
+                    myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 30000);
 
                 } else if (buffer[2] == 2) {
                     LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
