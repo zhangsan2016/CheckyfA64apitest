@@ -53,9 +53,9 @@
 
 
         <TextView
+            android:id="@+id/tv_warm_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_below="@id/capture_crop_view"
             android:padding="30dp"
             android:text="       您好,正在连接应急中心,为了保证求助信息真实性您的个人信息已存证（人脸、指纹）"
@@ -66,10 +66,10 @@
         <ImageView
             android:id="@+id/capture_mask_bottom"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/capture_crop_view"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_warm_prompt"
             android:background="@drawable/shadow" />
+
 
         <ImageView
             android:id="@+id/capture_mask_left"
