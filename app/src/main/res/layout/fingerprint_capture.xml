@@ -58,9 +58,9 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@id/capture_crop_view"
             android:padding="30dp"
-            android:text="    您好正在连接应急中心   为了保证求助信息真实性您的个人信息已存证（人脸、指纹）"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="28sp" />
+            android:text="       您好,正在连接应急中心,为了保证求助信息真实性您的个人信息已存证（人脸、指纹）"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="22sp" />
 
 
         <ImageView
