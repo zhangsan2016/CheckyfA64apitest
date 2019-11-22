@@ -137,12 +137,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
                         // 更新界面电参
-                        tv_voltage.setText((ldDevice.getVoltage() / 100) + " V");
-                        tv_electricity.setText((ldDevice.getElectricity() / 100) + " A");
-                        tv_power.setText((ldDevice.getPower() / 10) + " W");
-                        tv_energy.setText((int) ldDevice.getElectricalEnergy() + " Kw.h");
-                        tv_power_factor.setText((ldDevice.getPowerFactor() / 1000) + "");
-                        tv_leak_curt.setText((int) (ldDevice.getLeakCurrent()) + " mA");
+                        tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
+                        tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
+                        tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
+                        tv_energy.setText("电能：" + (int) ldDevice.getElectricalEnergy() + " Kw.h");
+                        tv_power_factor.setText("功率因数：" + (ldDevice.getPowerFactor() / 1000) + "");
+                        tv_leak_curt.setText("漏电电流：" + (int) (ldDevice.getLeakCurrent()) + " mA");
 
                         StringBuffer sb = new StringBuffer();
                         if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 0) == 1) {
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         if (sb.toString().equals("")) {
                             sb.append("正常");
                         }
-                        tv_alarm_status.setText(sb.toString());
+                        tv_alarm_status.setText("报警状态：" + sb.toString());
                         // tv_alarm_status.setTextColor();
 
                         //   mCamera.startPreview();// 开启预览
