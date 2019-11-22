@@ -148,7 +148,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/device_camera_bg3" />
+        android:src="@drawable/device_camera_bg2" />
 
 
     <LinearLayout
