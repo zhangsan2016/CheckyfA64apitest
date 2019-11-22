@@ -5,29 +5,19 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
-    <FrameLayout
+    <SurfaceView
+        android:id="@+id/capture_preview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="288dp"
+        android:visibility="gone" />
 
-        <SurfaceView
-            android:id="@+id/capture_preview"
-            android:layout_width="match_parent"
-            android:layout_height="288dp"
-            android:visibility="gone" />
-
-
-        <VideoView
-            android:id="@+id/video_view"
-            android:layout_width="match_parent"
-            android:layout_height="288dp" />
-    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#02102E"
-        android:orientation="vertical"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
@@ -154,17 +144,17 @@
 
     </LinearLayout>
 
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/device_camera_bg2" />
+        android:src="@drawable/device_camera_bg" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/device_camera_bg"
+        android:background="@drawable/centralized_control_led_border"
         android:orientation="vertical"
         android:padding="10dp"
         android:visibility="gone">
@@ -191,14 +181,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_voltage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="电压：" />
 
                 <TextView
-                    android:id="@+id/tv_electricity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -206,44 +194,131 @@
 
 
                 <TextView
-                    android:id="@+id/tv_power"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="功率：" />
 
                 <TextView
-                    android:id="@+id/tv_energy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="电能：" />
 
 
-                <TextView
-                    android:id="@+id/tv_power_factor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="功率因数：" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_leak_curt"
+                    android:id="@+id/tv_voltage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="漏电电流：" />
+                    android:text="224.03" />
 
                 <TextView
-                    android:id="@+id/tv_alarm_status"
+                    android:id="@+id/tv_electricity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="报警状态：" />
+                    android:text="0" />
+
+                <TextView
+                    android:id="@+id/tv_power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0.2" />
+
+                <TextView
+                    android:id="@+id/tv_energy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0" />
 
 
             </LinearLayout>
+
         </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="功率因数：" />
+
+            <TextView
+                android:id="@+id/tv_power_factor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:minWidth="50dp"
+                android:text="0.66" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="漏电电流：" />
+
+            <TextView
+                android:id="@+id/tv_leak_curt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:minWidth="50dp"
+                android:text="0" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="报警状态：" />
+
+            <TextView
+                android:id="@+id/tv_alarm_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:minWidth="50dp"
+                android:text="正常" />
+
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 
