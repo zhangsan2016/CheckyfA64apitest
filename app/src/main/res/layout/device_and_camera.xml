@@ -19,7 +19,7 @@
         <VideoView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="288dp" />
+            android:layout_height="150dp" />
     </FrameLayout>
 
     <RelativeLayout
@@ -35,7 +35,7 @@
             android:drawablePadding="5dp"
             android:gravity="center"
             android:text="洛丁智慧城市照明云管理系统"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/color_device_text"  />
 
 
     </RelativeLayout>
@@ -54,7 +54,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="设备信息"
-            android:textColor="@android:color/white"
+            android:textColor="@color/color_device_text"
             android:textSize="22dp" />
 
 
@@ -73,7 +73,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="电压：224.03"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text"  />
 
 
             <TextView
@@ -85,7 +85,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="电流：0"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text" />
 
         </LinearLayout>
 
@@ -103,7 +103,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="功率：0.2"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text" />
 
 
             <TextView
@@ -115,7 +115,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="电能：0"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text" />
 
         </LinearLayout>
 
@@ -134,7 +134,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="功率因数：0.66"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text" />
 
 
             <TextView
@@ -146,7 +146,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="漏电电流：0"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text" />
 
         </LinearLayout>
 
@@ -165,7 +165,7 @@
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
                 android:text="报警状态：正常"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/color_device_text" />
 
 
         </LinearLayout>
