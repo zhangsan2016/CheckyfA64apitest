@@ -1,8 +1,10 @@
 package smartcity.ldgd.com.checkyfa64apitest.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
@@ -12,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     // 电参信息
     private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status;
     // 温度、湿度、光照度
-    private TextView tv_temperature, tv_humidity,tv_illuminance;
+    private TextView tv_temperature, tv_humidity, tv_illuminance;
 
     // 指纹视图
     private RelativeLayout fingerprintView;
@@ -139,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
                         // 更新界面电参
-                        tv_temperature.setText("温度：" +  (ldDevice.getTemperature() / 10) + " ℃");
-                        tv_humidity.setText("湿度：" +  (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
+                        tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " ℃");
                         tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
@@ -179,8 +182,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                     // 更新界面电参
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
-                        tv_temperature.setText("温度：" +  (ldDevice.getTemperature() / 10) + " ℃");
-                        tv_humidity.setText("湿度：" +  (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
+                        tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " ℃");
                         tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
@@ -229,32 +232,39 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         initPortListening();
 
 
-      /*  RelativeLayout   scanCropView = (RelativeLayout) findViewById(R.id.capture_crop_view);
-        ImageView  scanLine = (ImageView) findViewById(R.id.capture_scan_line);
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation
-                .RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
-                0.9f);
-        animation.setDuration(3000);
-        animation.setRepeatCount(-1);
-        animation.setRepeatMode(Animation.RESTART);
-        scanLine.startAnimation(animation);*/
+/*
+       String path = MainActivity.this.getExternalCacheDir().getPath() + "/" + "app-debug.apk";
+        openAPKFile(MainActivity.this, path);
+*/
 
+    }
 
-       /* if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
-        } else {
-            //扫码
-        }*/
+    /**
+     * 打开安装包
+     *
+     * @param mContext
+     * @param fileUri
+     */
+    public void openAPKFile(Activity mContext, String fileUri) {
+        // 核心是下面几句代码
+        if (null != fileUri) {
+            try {
 
-      /*  List<Camera.Size> previewSizes = mCamera.getParameters().getSupportedPreviewSizes();
-        for (int i = 0; i < previewSizes.size(); i++) {
-            Camera.Size psize = previewSizes.get(i);
-            Log.e(TAG + "initCamera", "PreviewSize,width: " + psize.width + " height: " + psize.height);
-        }*/
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                File apkFile = new File(fileUri);
+            //    Runtime.getRuntime().exec("chmod 777 " + apkFile.getCanonicalPath());
 
-/*     Intent intent = new Intent(this, rtspActivity.class);
-        startActivity(intent);*/
+                intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+                    mContext.startActivity(intent);
+                    Process.killProcess(android.os.Process.myPid());
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
 
+            }
+        }
     }
 
 
@@ -382,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 // 解析指令(判断功能吗)
                 if (buffer[2] == 5) {
 
-                 LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
+                    LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
 
 
                     //  获取电参
