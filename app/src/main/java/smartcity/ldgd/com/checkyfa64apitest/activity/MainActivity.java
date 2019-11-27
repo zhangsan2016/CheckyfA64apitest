@@ -56,7 +56,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final int START_FINGERPRINTVIEW = 12;
     private static final int STOP_DEVICE_AND_CAMERA = 13;
     private static final int START_DEVICE_AND_CAMERA = 14;
+    private static final int UP_PARAMETER = 15;
     private static final String TAG = "MainActivity";
+
 
     // 要切换的照片，放在drawable文件夹下
     int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
@@ -126,10 +128,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     break;
                 case START_DEVICE_AND_CAMERA:
 
-                    if (fingerprintView.getVisibility() == View.VISIBLE) {
-                        return;
-                    }
-
 
                     if (deviceAndCameraView.getVisibility() == View.GONE) {
                         // 显示设备与相机界面
@@ -172,8 +170,22 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         // tv_alarm_status.setTextColor();
 
                         //   mCamera.startPreview();// 开启预览
-
                     }
+                    break;
+                case UP_PARAMETER:
+
+                    // 更新界面电参
+                    if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
+                        tv_temperature.setText("温度：" +  (ldDevice.getTemperature() / 10) + " ℃");
+                        tv_humidity.setText("湿度：" +  (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
+                        tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
+                        tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
+                        tv_energy.setText("电能：" + (int) ldDevice.getElectricalEnergy() + " Kw.h");
+                        tv_power_factor.setText("功率因数：" + (ldDevice.getPowerFactor() / 1000) + "");
+                        tv_leak_curt.setText("漏电电流：" + (int) (ldDevice.getLeakCurrent()) + " mA");
+                    }
+
                     break;
             }
 
@@ -385,7 +397,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     ldDevice.setTemperature(MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]}));
                     ldDevice.setHumidity(MyByteUtil.bytesIntHL(new byte[]{buffer[11], buffer[12]}));
 
-                    myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+                    myHandler.removeMessages(UP_PARAMETER);
+                    myHandler.sendEmptyMessage(UP_PARAMETER);
 
                 } else if (buffer[2] == 1) {
                     LogUtil.e(" 红外启动 = " + Arrays.toString(buffer));
