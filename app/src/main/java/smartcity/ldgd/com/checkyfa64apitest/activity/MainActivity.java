@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private LdDevice ldDevice = new LdDevice();
     // 电参信息
     private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status;
+    // 温度、湿度
+    private TextView tv_temperature, tv_humidity;
 
     // 指纹视图
     private RelativeLayout fingerprintView;
@@ -137,12 +139,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
                         // 更新界面电参
+                        tv_temperature.setText("温度：" +  (ldDevice.getTemperature() / 10) + " ℃");
+                        tv_humidity.setText("湿度：" +  (ldDevice.getHumidity() / 10) + " ℃");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
                         tv_energy.setText("电能：" + (int) ldDevice.getElectricalEnergy() + " Kw.h");
                         tv_power_factor.setText("功率因数：" + (ldDevice.getPowerFactor() / 1000) + "");
                         tv_leak_curt.setText("漏电电流：" + (int) (ldDevice.getLeakCurrent()) + " mA");
+
 
                         StringBuffer sb = new StringBuffer();
                         if (MyByteUtil.bitget(ldDevice.getAlarmStatus(), 0) == 1) {
@@ -250,6 +255,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_leak_curt = (TextView) this.findViewById(R.id.tv_leak_curt);
         tv_alarm_status = (TextView) this.findViewById(R.id.tv_alarm_status);
         videoView = (VideoView) this.findViewById(R.id.video_view);
+        tv_temperature = (TextView) this.findViewById(R.id.tv_temperature);
+        tv_humidity = (TextView) this.findViewById(R.id.tv_humidity);
 
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -266,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     protected void onResume() {
         super.onResume();
         // 摄像头开启预览
-      //  videoView.setVideoURI(Uri.parse("rtsp://192.168.1.72:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
+        //  videoView.setVideoURI(Uri.parse("rtsp://192.168.1.72:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
         videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
 
 
@@ -308,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             int size = inputStream.read(buffer);
                             LogUtil.e(" buffer = " + Arrays.toString(buffer));
 
-                            if(buffer == null || buffer.length == 0){
+                            if (buffer == null || buffer.length == 0) {
                                 continue;
                             }
 //                            LogUtil.e(" buffer = " + new String(buffer, "utf-8"));
@@ -352,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 if(!checkCrc){
                     return;
                 }*/
-            //    Toast.makeText(MainActivity.this,Arrays.toString(buffer),Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(MainActivity.this,Arrays.toString(buffer),Toast.LENGTH_SHORT).show();
 
                 // 解析指令(判断功能吗)
                 if (buffer[2] == 5) {
@@ -372,6 +379,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     LogUtil.e("ldDevice = " + ldDevice.toString());
 
                     //   myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+
+                } else if (buffer[2] == 6) {
+                    LogUtil.e(" 获取温湿度 = " + Arrays.toString(buffer));
+                    ldDevice.setTemperature(MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]}));
+                    ldDevice.setHumidity(MyByteUtil.bytesIntHL(new byte[]{buffer[11], buffer[12]}));
+
+                    myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
 
                 } else if (buffer[2] == 1) {
                     LogUtil.e(" 红外启动 = " + Arrays.toString(buffer));
