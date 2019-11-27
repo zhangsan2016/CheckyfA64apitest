@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private ImageView scanLine;
     // 指纹扫描的动画
     private TranslateAnimation animation;
+    // 串口状态
+    private boolean openSerialPort = false;
 
     // 串口
     private SerialPort mSerialPort;
@@ -198,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         }
     };
+
 
 
     @Override
@@ -314,6 +317,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         videoView.requestFocus();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        openSerialPort = false;
+    }
+
     private void initPortListening() {
 
         if (mSerialPort == null) {
@@ -333,7 +342,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     //从串口对象中获取输入流
                     InputStream inputStream = mSerialPort.getInputStream();
                     //使用循环读取数据，建议放到子线程去
-                    while (true) {
+                    openSerialPort = true;
+                    while (openSerialPort ) {
                         if (inputStream.available() > 0) {
                             //当接收到数据时，sleep 500毫秒（sleep时间自己把握）
                             Thread.sleep(100);
@@ -690,4 +700,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void surfaceDestroyed(SurfaceHolder holder) {
         //SurfaceView开始销毁
     }
+
+
 }
