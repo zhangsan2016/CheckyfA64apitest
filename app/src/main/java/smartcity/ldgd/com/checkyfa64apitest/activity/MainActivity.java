@@ -307,6 +307,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             byte[] buffer = new byte[inputStream.available()];
                             int size = inputStream.read(buffer);
                             LogUtil.e(" buffer = " + Arrays.toString(buffer));
+
+                            if(buffer == null || buffer.length == 0){
+                                continue;
+                            }
 //                            LogUtil.e(" buffer = " + new String(buffer, "utf-8"));
 
                           /*  if (buffer[0] == 1) {
