@@ -49,6 +49,8 @@ import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 
+import static smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil.bytesIntHL;
+
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 26;
@@ -72,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private LdDevice ldDevice = new LdDevice();
     // 电参信息
     private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status;
-    // 温度、湿度
-    private TextView tv_temperature, tv_humidity;
+    // 温度、湿度、光照度
+    private TextView tv_temperature, tv_humidity,tv_illuminance;
 
     // 指纹视图
     private RelativeLayout fingerprintView;
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         // 更新界面电参
                         tv_temperature.setText("温度：" +  (ldDevice.getTemperature() / 10) + " ℃");
                         tv_humidity.setText("湿度：" +  (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
@@ -178,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
                         tv_temperature.setText("温度：" +  (ldDevice.getTemperature() / 10) + " ℃");
                         tv_humidity.setText("湿度：" +  (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
@@ -269,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         videoView = (VideoView) this.findViewById(R.id.video_view);
         tv_temperature = (TextView) this.findViewById(R.id.tv_temperature);
         tv_humidity = (TextView) this.findViewById(R.id.tv_humidity);
+        tv_illuminance = (TextView) this.findViewById(R.id.tv_illuminance);
 
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -360,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (buffer.length <= 2) {
+                if (buffer.length <= 2 || buffer.length <= 8) {
                     return;
                 }
 
@@ -373,10 +378,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }*/
                 //    Toast.makeText(MainActivity.this,Arrays.toString(buffer),Toast.LENGTH_SHORT).show();
 
+
                 // 解析指令(判断功能吗)
                 if (buffer[2] == 5) {
 
-                    LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
+                 LogUtil.e(" 获取电参 = " + Arrays.toString(buffer));
+
 
                     //  获取电参
                     ldDevice.setVoltage((MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]})));
@@ -394,8 +401,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 } else if (buffer[2] == 6) {
                     LogUtil.e(" 获取温湿度 = " + Arrays.toString(buffer));
-                    ldDevice.setTemperature(MyByteUtil.bytesIntHL(new byte[]{buffer[9], buffer[10]}));
-                    ldDevice.setHumidity(MyByteUtil.bytesIntHL(new byte[]{buffer[11], buffer[12]}));
+                    ldDevice.setTemperature(bytesIntHL(new byte[]{buffer[9], buffer[10]}));
+                    ldDevice.setHumidity(bytesIntHL(new byte[]{buffer[11], buffer[12]}));
+                    ldDevice.setIlluminance(bytesIntHL(new byte[]{buffer[13], buffer[14], buffer[15]}));
 
                     myHandler.removeMessages(UP_PARAMETER);
                     myHandler.sendEmptyMessage(UP_PARAMETER);

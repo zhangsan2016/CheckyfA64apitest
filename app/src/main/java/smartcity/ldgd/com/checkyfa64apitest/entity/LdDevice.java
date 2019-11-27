@@ -8,6 +8,8 @@ package smartcity.ldgd.com.checkyfa64apitest.entity;
 
 public class LdDevice {
 
+    // 照明度
+    private double illuminance;
     // 温度
     private double temperature;
     // 湿度
@@ -26,6 +28,7 @@ public class LdDevice {
     private double leakCurrent;
     // 报警状态
     private int alarmStatus;
+
 
 
 
@@ -101,18 +104,27 @@ public class LdDevice {
         this.humidity = humidity;
     }
 
+    public double getIlluminance() {
+        return illuminance;
+    }
+
+    public void setIlluminance(double illuminance) {
+        this.illuminance = illuminance;
+    }
+
     @Override
     public String toString() {
         return "LdDevice{" +
-                "voltage=" + voltage +
+                "illuminance=" + illuminance +
+                ", temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", voltage=" + voltage +
                 ", electricity=" + electricity +
                 ", power=" + power +
                 ", electricalEnergy=" + electricalEnergy +
                 ", powerFactor=" + powerFactor +
                 ", leakCurrent=" + leakCurrent +
                 ", alarmStatus=" + alarmStatus +
-                ", temperature=" + temperature +
-                ", humidity=" + humidity +
                 '}';
     }
 }
