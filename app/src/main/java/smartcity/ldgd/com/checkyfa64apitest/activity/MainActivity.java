@@ -235,10 +235,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         initPortListening();
 
 
-/*
-       String path = MainActivity.this.getExternalCacheDir().getPath() + "/" + "app-debug.apk";
-        openAPKFile(MainActivity.this, path);
-*/
+      /* String path = MainActivity.this.getExternalCacheDir().getPath() + "/" + "app-debug.apk";
+        openAPKFile(MainActivity.this, path);*/
+   /*     File updateDir = new File(Environment.getExternalStorageDirectory(),
+                "app-debug.apk");
+        try {
+            updateDir.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
 
     }
 
