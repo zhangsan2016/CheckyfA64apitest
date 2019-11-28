@@ -117,8 +117,8 @@ public class HttpUtil {
             @Override
             public void run() {
                 OkHttpClient client =  new OkHttpClient.Builder()
-                        .connectTimeout(50, TimeUnit.SECONDS)//设置连接超时时间
-                        .readTimeout(50, TimeUnit.SECONDS).build();//设置读取超时时间
+                        .connectTimeout(20, TimeUnit.SECONDS)//设置连接超时时间
+                        .readTimeout(20, TimeUnit.SECONDS).build();//设置读取超时时间
                 Request request = new Request.Builder().url(address).build();
                 client.newCall(request).enqueue(callback);
 

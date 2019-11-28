@@ -47,19 +47,31 @@ public class aa {
         }*/
 
 
-        HttpUtil.sendHttpRequest("http://134.175.135.19:8080/APP/getUpdate", new okhttp3.Callback() {
+        HttpUtil.sendHttpRequest("http://134.175.135.19:8089/APP/getUpdate", new okhttp3.Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                System.out.println("xxxx"  + e.getMessage());
+                System.out.println("xxxx ok"  + e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                System.out.println("response = " +  response.body().string());
+                System.out.println("response ok = " +  response.body().string());
 
             }
         });
+
+     /*   HttpUtil.sendHttpRequest("http://134.175.135.19:8080/APP/getUpdate", new HttpUtil.HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                System.out.println("xxxx"  + response);
+            }
+
+            @Override
+            public void Error(Exception e) {
+                System.out.println("xxxx"  + e.getMessage().toString());
+            }
+        });*/
 
 
 

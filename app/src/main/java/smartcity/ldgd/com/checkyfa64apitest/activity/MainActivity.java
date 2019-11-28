@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
@@ -14,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Process;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final int STOP_DEVICE_AND_CAMERA = 13;
     private static final int START_DEVICE_AND_CAMERA = 14;
     private static final int UP_PARAMETER = 15;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE" };
     private static final String TAG = "MainActivity";
 
 
@@ -232,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         initPort2();
 
 
-
      /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
         openAPKFile(MainActivity.this, path);*/
 
@@ -247,34 +249,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             e.printStackTrace();
         }*/
 
-    }
-
-    /**
-     * 打开安装包
-     *
-     * @param mContext
-     * @param fileUri
-     */
-    public void openAPKFile(Activity mContext, String fileUri) {
-        // 核心是下面几句代码
-        if (null != fileUri) {
-            try {
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                File apkFile = new File(fileUri);
-                //    Runtime.getRuntime().exec("chmod 777 " + apkFile.getCanonicalPath());
-
-                intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
-                    mContext.startActivity(intent);
-                    Process.killProcess(android.os.Process.myPid());
-                }
-            } catch (Throwable e) {
-                e.printStackTrace();
-
-            }
-        }
     }
 
 
@@ -304,11 +278,30 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         //  checkPermissionCamera();
 
+
+           // 验证存储权限
+        verifyStoragePermissions(this);
+
         // 定时检测更新
         UpdateAppManager updateAppManager = new UpdateAppManager(this);
         updateAppManager.checkUpdateInfo();
 
 
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+
+        try {
+            //检测是否有写的权限
+            int permission = ActivityCompat.checkSelfPermission(activity,
+                    "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // 没有写的权限，去申请写的权限，会弹出对话框
+                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -61,7 +61,7 @@ public class UpdateAppManager {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_TOKEN:
-                    progressBar.setProgress(curProgress);
+              //      progressBar.setProgress(curProgress);
                     break;
 
                 case INSTALL_TOKEN:
@@ -105,10 +105,10 @@ public class UpdateAppManager {
                         out.write(buffer, 0, len);
                         readedLength += len;
                         curProgress = (int) (((float) readedLength / fileLength) * 100);
-                        handler.sendEmptyMessage(UPDATE_TOKEN);
+                      //  handler.sendEmptyMessage(UPDATE_TOKEN);
                         LogUtil.e("curProgress = " + curProgress);
                         if (readedLength >= fileLength) {
-                            dialog.dismiss();
+                         //   dialog.dismiss();
                             // 下载完毕，通知安装
                             handler.sendEmptyMessage(INSTALL_TOKEN);
                             break;
@@ -176,7 +176,7 @@ public class UpdateAppManager {
                     Looper.prepare();
 
 
-                    HttpUtil.sendHttpRequest("http://134.175.135.19:8080/APP/getUpdate", new okhttp3.Callback() {
+                    HttpUtil.sendHttpRequest("http://134.175.135.19:8089/APP/getUpdate", new okhttp3.Callback() {
 
                         @Override
                         public void onFailure(Call call, IOException e) {
