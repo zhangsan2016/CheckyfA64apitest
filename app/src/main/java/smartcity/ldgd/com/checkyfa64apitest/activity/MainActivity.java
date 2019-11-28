@@ -51,6 +51,7 @@ import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
+import smartcity.ldgd.com.checkyfa64apitest.util.UpdateAppManager;
 
 import static smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil.bytesIntHL;
 
@@ -202,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     };
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,12 +231,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 初始化串口
         initPort2();
 
-        // 监听串口
-        initPortListening();
 
 
-      /* String path = MainActivity.this.getExternalCacheDir().getPath() + "/" + "app-debug.apk";
+     /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
         openAPKFile(MainActivity.this, path);*/
+
+
+
+
    /*     File updateDir = new File(Environment.getExternalStorageDirectory(),
                 "app-debug.apk");
         try {
@@ -260,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 File apkFile = new File(fileUri);
-            //    Runtime.getRuntime().exec("chmod 777 " + apkFile.getCanonicalPath());
+                //    Runtime.getRuntime().exec("chmod 777 " + apkFile.getCanonicalPath());
 
                 intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -300,7 +302,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
 
-        checkPermissionCamera();
+        //  checkPermissionCamera();
+
+        // 定时检测更新
+        UpdateAppManager updateAppManager = new UpdateAppManager(this);
+        updateAppManager.checkUpdateInfo();
+
 
     }
 
@@ -348,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     InputStream inputStream = mSerialPort.getInputStream();
                     //使用循环读取数据，建议放到子线程去
                     openSerialPort = true;
-                    while (openSerialPort ) {
+                    while (openSerialPort) {
                         if (inputStream.available() > 0) {
                             //当接收到数据时，sleep 500毫秒（sleep时间自己把握）
                             Thread.sleep(100);
@@ -467,7 +474,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         }
 
-
+        // 监听串口
+        initPortListening();
     }
 
     private void initPort() {
@@ -543,6 +551,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
     private void initAdvertising() {
+
+        // 定时更新广告
+        TimedRefreshAD();
+
+
+    }
+
+    // 定时刷新广告
+    private void TimedRefreshAD() {
         final ImageView image = (ImageView) findViewById(R.id.image);
         final Handler handler = new Handler() {
             @Override

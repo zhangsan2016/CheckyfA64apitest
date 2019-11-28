@@ -1,5 +1,10 @@
 package smartcity.ldgd.com.checkyfa64apitest;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Response;
+import smartcity.ldgd.com.checkyfa64apitest.util.HttpUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 
 /**
@@ -9,10 +14,10 @@ import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
  */
 
 public class aa {
-
+    private  int i;
     public static void main(String[] args) {
 
-        System.out.println(MyByteUtil.bytesIntHL(new byte[]{5,-8}));
+        System.out.println(MyByteUtil.bytesIntHL(new byte[]{5, -8}));
 
      /*   int lengIndex = 7;
 
@@ -42,7 +47,35 @@ public class aa {
         }*/
 
 
+        HttpUtil.sendHttpRequest("http://134.175.135.19:8080/APP/getUpdate", new okhttp3.Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("xxxx"  + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                System.out.println("response = " +  response.body().string());
+
+            }
+        });
+
+
+
+
+ /*       //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+        //定时周期任务(间隔时间重复执行)
+        final int i = 0;
+        scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                //执行代码
+                i++;
+                System.out.println("定时执行 " + i);
+            }
+        }, 0, 1, TimeUnit.MINUTES);
+        //参数第一次执行时间，间隔执行时间,执行时间单位*/
     }
-
-
 }

@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitXY" />
 
     <include
         android:id="@+id/view_fingerprint_capture"
