@@ -43,6 +43,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
@@ -104,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private SurfaceHolder mHolder;
     private CameraManager mCameraManager;
     private Camera mCamera;
+
+    private UpdateAppManager updateAppManager;
 
     private Handler myHandler = new Handler() {
         @Override
@@ -282,10 +287,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
            // 验证存储权限
         verifyStoragePermissions(this);
 
-        // 定时检测更新
-        UpdateAppManager updateAppManager = new UpdateAppManager(this);
-        updateAppManager.checkUpdateInfo();
-
 
     }
 
@@ -320,6 +321,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         });
         videoView.start();
         videoView.requestFocus();
+
+        // 检测更新
+        CheckForUpdates();
+
+    }
+
+    /**
+     *  检测是否需要更新
+     */
+    private void CheckForUpdates() {
+        // 定时检测更新app
+        updateAppManager =  new UpdateAppManager(this);
+        //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+        //定时周期任务(间隔时间重复执行)
+        final int i = 0;
+        scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                LogUtil.e("定时更新执行");
+                // 定时检测更新
+                updateAppManager.checkUpdateInfo();
+
+            }
+        }, 0, 5, TimeUnit.MINUTES);
+        //参数第一次执行时间，间隔执行时间,执行时间单位
     }
 
     @Override
