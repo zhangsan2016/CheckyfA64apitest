@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 要切换的照片，放在drawable文件夹下
   //  int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
-    int[] images = {R.drawable.img56, R.drawable.img4, R.drawable.img5};
+    int[] images = {R.drawable.img56, R.drawable.img57, R.drawable.img5};
     // int[] images = {R.drawable.img1,R.drawable.img2,R.drawable.img3,R.drawable.img4, R.drawable.img5};
 
     // Message传递标志
