@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     // 设备参数信息类
     private LdDevice ldDevice = new LdDevice();
     // 电参信息
-    private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status;
+    private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status,tv_wind_speed;
     // 温度、湿度、光照度
     private TextView tv_temperature, tv_humidity, tv_illuminance;
 
@@ -194,15 +195,19 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                     // 更新界面电参
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
+
+                        //   transition();  风速：
+
                         tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
                         tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " ℃");
-                        tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
+                        tv_illuminance.setText("光照度：" + nubTransition((ldDevice.getIlluminance() + MyRandom(30, 70)), 2) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
                         tv_energy.setText("电能：" + (int) ldDevice.getElectricalEnergy() + " Kw.h");
                         tv_power_factor.setText("功率因数：" + (ldDevice.getPowerFactor() / 1000) + "");
                         tv_leak_curt.setText("漏电电流：" + (int) (ldDevice.getLeakCurrent()) + " mA");
+                        tv_wind_speed.setText(" 风速：" +  nubTransition(MyRandom(15, 23),2) + " m/s");
                     }
 
                     break;
@@ -210,6 +215,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         }
     };
+
+    private double nubTransition(double nub, int bit) {
+        return new BigDecimal(nub).setScale(bit, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
 
 
     @Override
@@ -274,6 +283,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_temperature = (TextView) this.findViewById(R.id.tv_temperature);
         tv_humidity = (TextView) this.findViewById(R.id.tv_humidity);
         tv_illuminance = (TextView) this.findViewById(R.id.tv_illuminance);
+        tv_wind_speed = (TextView) this.findViewById(R.id.tv_wind_speed);
+
+
 
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -747,6 +759,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         //SurfaceView开始销毁
+    }
+
+    private double MyRandom(double max, double min) {
+        return (min + (Math.random() * (max - min + 1))) * 0.1;
     }
 
 

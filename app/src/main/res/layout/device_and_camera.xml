@@ -140,7 +140,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
-                android:text="温度：4.03"
+                android:text="温度：23.03"
                 android:textColor="@color/color_device_text" />
 
 
@@ -178,6 +178,7 @@
 
 
             <TextView
+                android:id="@+id/tv_wind_speed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

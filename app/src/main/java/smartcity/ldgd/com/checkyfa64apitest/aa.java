@@ -1,5 +1,7 @@
 package smartcity.ldgd.com.checkyfa64apitest;
 
+import java.math.BigDecimal;
+
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 
 /**
@@ -9,7 +11,8 @@ import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
  */
 
 public class aa {
-    private  int i;
+    private int i;
+
     public static void main(String[] args) {
 
         System.out.println(MyByteUtil.bytesIntHL(new byte[]{5, -8}));
@@ -85,7 +88,32 @@ public class aa {
         }, 0, 1, TimeUnit.MINUTES);
         //参数第一次执行时间，间隔执行时间,执行时间单位*/
 
+        for (int i = 0; i < 100; i++) {
+            System.out.println("xxx " + MyRandom2(15, 23));
+        }
+
+
+        System.out.println(nubTransition(4564.325, 3));
 
 
     }
+
+    private double MyRandom(double max, double min) {
+        return (min + (Math.random() * (max - min + 1))) * 0.1;
+    }
+
+    private static double nubTransition(double nub, int bit) {
+        return new BigDecimal(nub).setScale(bit, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+
+
+
+    private static double MyRandom2(double max, double min) {
+        double nub = (min + (Math.random() * (max - min + 1))) * 0.1;
+        BigDecimal b = new BigDecimal(nub);
+
+        return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
 }
