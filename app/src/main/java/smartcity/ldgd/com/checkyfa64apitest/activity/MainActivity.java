@@ -312,11 +312,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 摄像头开启预览
         //  videoView.setVideoURI(Uri.parse("rtsp://192.168.1.72:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
         videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
+      //  rtsp://192.168.2.100:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E
+       // videoView.setVideoURI(Uri.parse("rtsp://192.168.2.156:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E"));
 
 
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
+
+
+                LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
                 return true;
             }
         });
