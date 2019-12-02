@@ -185,7 +185,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
-                android:text="风速：26 m/s"
+                android:text="风速：0.4 m/s"
                 android:textColor="@color/color_device_text" />
 
         </LinearLayout>

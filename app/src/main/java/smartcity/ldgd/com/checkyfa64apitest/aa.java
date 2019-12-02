@@ -1,10 +1,5 @@
 package smartcity.ldgd.com.checkyfa64apitest;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Response;
-import smartcity.ldgd.com.checkyfa64apitest.util.HttpUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 
 /**
@@ -47,7 +42,7 @@ public class aa {
         }*/
 
 
-        HttpUtil.sendHttpRequest("http://134.175.135.19:8089/APP/getUpdate", new okhttp3.Callback() {
+    /*    HttpUtil.sendHttpRequest("http://134.175.135.19:8089/APP/getUpdate", new okhttp3.Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
@@ -59,7 +54,7 @@ public class aa {
                 System.out.println("response ok = " +  response.body().string());
 
             }
-        });
+        });*/
 
      /*   HttpUtil.sendHttpRequest("http://134.175.135.19:8080/APP/getUpdate", new HttpUtil.HttpCallbackListener() {
             @Override
@@ -89,5 +84,8 @@ public class aa {
             }
         }, 0, 1, TimeUnit.MINUTES);
         //参数第一次执行时间，间隔执行时间,执行时间单位*/
+
+
+
     }
 }
