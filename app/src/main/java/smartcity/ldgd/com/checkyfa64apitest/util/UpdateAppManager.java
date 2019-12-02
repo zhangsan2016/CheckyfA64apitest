@@ -79,6 +79,10 @@ public class UpdateAppManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                // 在非主线程的情况下需要自己开启线程中的 Looper 否则使用 Handle 会报错
+                Looper.prepare();
+
                 URL url = null;
                 InputStream in = null;
                 FileOutputStream out = null;
@@ -136,6 +140,7 @@ public class UpdateAppManager {
                         conn.disconnect();
                     }
                 }
+                Looper.loop();
             }
         }).start();
     }
@@ -172,8 +177,6 @@ public class UpdateAppManager {
             public void run() {
 
                 try {
-                    // 在非主线程的情况下需要自己开启线程中的 Looper 否则使用 Handle 会报错
-                    Looper.prepare();
 
 
                     HttpUtil.sendHttpRequest("http://134.175.135.19:8089/APP/getUpdate", new okhttp3.Callback() {
@@ -187,7 +190,6 @@ public class UpdateAppManager {
                         public void onResponse(Call call, Response response) throws IOException {
 
                             result = response.body().string();
-                            LogUtil.e("response json = " + result);
 
                             try {
                                 int IntversionCode;
@@ -222,7 +224,7 @@ public class UpdateAppManager {
                                         LogUtil.e("app 需要更新版本");
                                         downloadApp();
                                     } else {
-                                        LogUtil.e("app 版本已经是最新");
+                                     LogUtil.e("app 版本已经是最新");
                                     }
                                 } catch (NumberFormatException e) {
                                     e.printStackTrace();
@@ -233,7 +235,6 @@ public class UpdateAppManager {
                         }
                     });
 
-                    Looper.loop();
 
                 } catch (Exception e) {
 

@@ -68,12 +68,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
+            "android.permission.WRITE_EXTERNAL_STORAGE"};
     private static final String TAG = "MainActivity";
 
 
     // 要切换的照片，放在drawable文件夹下
-  //  int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
+    //  int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
     int[] images = {R.drawable.img56, R.drawable.img57, R.drawable.img5};
     // int[] images = {R.drawable.img1,R.drawable.img2,R.drawable.img3,R.drawable.img4, R.drawable.img5};
 
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         //  checkPermissionCamera();
 
 
-           // 验证存储权限
+        // 验证存储权限
         verifyStoragePermissions(this);
 
 
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     "android.permission.WRITE_EXTERNAL_STORAGE");
             if (permission != PackageManager.PERMISSION_GRANTED) {
                 // 没有写的权限，去申请写的权限，会弹出对话框
-                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -312,8 +312,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 摄像头开启预览
         //  videoView.setVideoURI(Uri.parse("rtsp://192.168.1.72:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
         videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
-      //  rtsp://192.168.2.100:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E
-       // videoView.setVideoURI(Uri.parse("rtsp://192.168.2.156:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E"));
+        //  rtsp://192.168.2.100:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E
+        // videoView.setVideoURI(Uri.parse("rtsp://192.168.2.156:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E"));
 
 
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -334,11 +334,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     /**
-     *  检测是否需要更新
+     * 检测是否需要更新
      */
     private void CheckForUpdates() {
         // 定时检测更新app
-        updateAppManager =  new UpdateAppManager(this);
+        updateAppManager = new UpdateAppManager(this);
         //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
         ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
         //定时周期任务(间隔时间重复执行)
