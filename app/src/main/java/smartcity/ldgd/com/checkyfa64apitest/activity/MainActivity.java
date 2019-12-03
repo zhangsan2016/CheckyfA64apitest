@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 要切换的照片，放在drawable文件夹下
     //  int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
-    int[] images = {R.drawable.img57, R.drawable.img57, R.drawable.img58};
-    // int[] images = {R.drawable.img1,R.drawable.img2,R.drawable.img3,R.drawable.img4, R.drawable.img5};
+    //  int[] images = {R.drawable.img57, R.drawable.img57, R.drawable.img58};
+    int[] images = {R.drawable.img57, R.drawable.img58};
 
     // Message传递标志
     int SIGN = 17;
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     // 设备参数信息类
     private LdDevice ldDevice = new LdDevice();
     // 电参信息
-    private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status,tv_wind_speed;
+    private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status, tv_wind_speed;
     // 温度、湿度、光照度
     private TextView tv_temperature, tv_humidity, tv_illuminance;
 
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         tv_energy.setText("电能：" + (int) ldDevice.getElectricalEnergy() + " Kw.h");
                         tv_power_factor.setText("功率因数：" + (ldDevice.getPowerFactor() / 1000) + "");
                         tv_leak_curt.setText("漏电电流：" + (int) (ldDevice.getLeakCurrent()) + " mA");
-                        tv_wind_speed.setText(" 风速：" +  nubTransition(MyRandom(15, 23),2) + " m/s");
+                        tv_wind_speed.setText(" 风速：" + nubTransition(MyRandom(15, 23), 2) + " m/s");
                     }
 
                     break;
@@ -282,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_humidity = (TextView) this.findViewById(R.id.tv_humidity);
         tv_illuminance = (TextView) this.findViewById(R.id.tv_illuminance);
         tv_wind_speed = (TextView) this.findViewById(R.id.tv_wind_speed);
-
 
 
         // 初始化动画
@@ -619,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 msg.what = SIGN;
                 handler.sendMessage(msg);
             }
-        }, 50, 5000);
+        }, 50, 15000);
     }
 
     //region 初始化和回收相关资源

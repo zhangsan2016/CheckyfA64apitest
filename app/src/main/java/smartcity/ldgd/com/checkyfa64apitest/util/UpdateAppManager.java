@@ -224,7 +224,7 @@ public class UpdateAppManager {
                                         LogUtil.e("app 需要更新版本");
                                         downloadApp();
                                     } else {
-                                     LogUtil.e("app 需要更新版本");
+                                     LogUtil.e("app 不需要更新版本");
                                     }
                                 } catch (NumberFormatException e) {
                                     e.printStackTrace();
