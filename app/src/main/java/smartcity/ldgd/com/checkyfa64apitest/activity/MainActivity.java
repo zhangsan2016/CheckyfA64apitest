@@ -196,8 +196,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     // 更新界面电参
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
 
-                        //   transition();  风速：
-
                         tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
                         tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " ℃");
                         tv_illuminance.setText("光照度：" + nubTransition((ldDevice.getIlluminance() + MyRandom(30, 70)), 2) + "");
