@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 updateAppManager.checkUpdateInfo();
 
             }
-        }, 0, 2, TimeUnit.MINUTES);
+        }, 0, 20, TimeUnit.MINUTES);
         //参数第一次执行时间，间隔执行时间,执行时间单位
     }
 
