@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +25,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -42,6 +44,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -49,8 +52,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
+import smartcity.ldgd.com.checkyfa64apitest.adapter.ProvinceAdapter;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
+import smartcity.ldgd.com.checkyfa64apitest.util.FaceRecoUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.UpdateAppManager;
@@ -88,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private TextView tv_voltage, tv_electricity, tv_power, tv_energy, tv_power_factor, tv_leak_curt, tv_alarm_status, tv_wind_speed;
     // 温度、湿度、光照度
     private TextView tv_temperature, tv_humidity, tv_illuminance;
+    // 人脸识别
+    private ImageView iv_face1, iv_face2, iv_face3, iv_face4;
+    private GridView gridview;
 
     // 指纹视图
     private RelativeLayout fingerprintView;
@@ -214,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     };
 
+
     private double nubTransition(double nub, int bit) {
         return new BigDecimal(nub).setScale(bit, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
@@ -246,6 +255,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         // 初始化串口
         initPort2();
+
+        // 初始化人脸识别
+        initFaceRecognition();
 
 
      /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
@@ -282,7 +294,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_humidity = (TextView) this.findViewById(R.id.tv_humidity);
         tv_illuminance = (TextView) this.findViewById(R.id.tv_illuminance);
         tv_wind_speed = (TextView) this.findViewById(R.id.tv_wind_speed);
+        gridview = (GridView) this.findViewById(R.id.gridview);
 
+
+        provinceAdapter = new ProvinceAdapter(this);
+        gridview.setAdapter(provinceAdapter);
 
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -297,6 +313,43 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 验证存储权限
         verifyStoragePermissions(this);
 
+
+    }
+
+    private List<String> imgs;
+    private FaceRecoUtil faceRecoUtil = new FaceRecoUtil();
+    private ProvinceAdapter provinceAdapter;
+
+    private void initFaceRecognition() {
+
+        //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+        scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                if (imgs != null && imgs.size() > 0) {
+                    imgs.clear();
+                }
+
+
+                imgs = faceRecoUtil.getFilesAllName(Environment.getExternalStorageDirectory() + "/magic");
+                LogUtil.e("FaceRecognitionUtil Size xxx = " + imgs.size());
+                for (String img : imgs) {
+                    LogUtil.e("FaceRecognitionUtil xxx = " + img);
+                }
+                LogUtil.e("xxxxxxxxxxxxxxxxxxxxxx");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        provinceAdapter.setImgs(imgs.subList(0,15));
+                    }
+                });
+
+
+
+            }
+        }, 0, 2, TimeUnit.SECONDS);
+        //参数第一次执行时间，间隔执行时间,执行时间单位
 
     }
 

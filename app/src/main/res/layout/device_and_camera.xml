@@ -58,8 +58,6 @@
             android:textSize="22dp" />
 
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -223,6 +221,37 @@
 
         </LinearLayout>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/electric_parameter_bg"
+                android:gravity="center"
+                android:text="TVOC：0.21 mg/m3"
+                android:textColor="@color/color_device_text" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/electric_parameter_bg"
+                android:gravity="center"
+                android:text="PM2.5：22 μg/m³"
+                android:textColor="@color/color_device_text" />
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -248,18 +277,18 @@
 
     </LinearLayout>
 
-
-    <!--   <ImageView
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:scaleType="fitXY"
-           android:src="@drawable/device_camera_bg" />-->
-
-    <ImageView
+    <GridView
+        android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/device_camera_bg" />
+        android:numColumns="2"></GridView>
+
+
+    <!--    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/device_camera_bg" />-->
 
 
 </LinearLayout>
