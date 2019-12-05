@@ -68,8 +68,11 @@ public class ProvinceAdapter extends BaseAdapter {
         }
 
 
-        String uri = imgs.get(position);
-        holder.imageView.setImageURI(Uri.fromFile(new File(uri)));
+        if(imgs.size() > position){
+            String uri = imgs.get(position);
+            holder.imageView.setImageURI(Uri.fromFile(new File(uri)));
+        }
+
 
 
         return convertView;

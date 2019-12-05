@@ -235,7 +235,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
-                android:text="TVOC：0.21 mg/m3"
+                android:text="TVOC：0.08 mg/m3"
                 android:textColor="@color/color_device_text" />
 
 

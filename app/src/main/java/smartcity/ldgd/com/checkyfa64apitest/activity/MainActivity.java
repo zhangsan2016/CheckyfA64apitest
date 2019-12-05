@@ -319,6 +319,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private List<String> imgs;
     private FaceRecoUtil faceRecoUtil = new FaceRecoUtil();
     private ProvinceAdapter provinceAdapter;
+    // 需要使用图片个数
+    private int numberUsed = 15;
+    // list截取的位置
+    private int toIndex;
 
     private void initFaceRecognition() {
 
@@ -327,28 +331,44 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
+
+                toIndex = 0;
+
+                // 清空集合缓存
                 if (imgs != null && imgs.size() > 0) {
                     imgs.clear();
                 }
 
-
+                // 获取指定目录中所有图片
                 imgs = faceRecoUtil.getFilesAllName(Environment.getExternalStorageDirectory() + "/magic");
                 LogUtil.e("FaceRecognitionUtil Size xxx = " + imgs.size());
                 for (String img : imgs) {
                     LogUtil.e("FaceRecognitionUtil xxx = " + img);
                 }
-                LogUtil.e("xxxxxxxxxxxxxxxxxxxxxx");
+
+                if (imgs == null && imgs.size() == 0) {
+                    provinceAdapter.notifyDataSetChanged();
+                    return;
+
+                } else {
+                    if (imgs.size() < numberUsed) {
+                        toIndex = imgs.size();
+                    } else {
+                        toIndex = numberUsed;
+                    }
+
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        provinceAdapter.setImgs(imgs.subList(0,15));
+                        provinceAdapter.setImgs(imgs.subList(0, toIndex));
                     }
                 });
-
+                LogUtil.e("xxxxxxxxxxxxxxxxxxxxxx");
 
 
             }
-        }, 0, 2, TimeUnit.SECONDS);
+        }, 0, 1, TimeUnit.SECONDS);
         //参数第一次执行时间，间隔执行时间,执行时间单位
 
     }
