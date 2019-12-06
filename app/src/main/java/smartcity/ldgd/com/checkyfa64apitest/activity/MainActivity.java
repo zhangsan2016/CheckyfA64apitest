@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
@@ -75,7 +76,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
+    // 人脸识别存放目录
+    private String ficeFile = Environment.getExternalStorageDirectory() + "/magic";
     private static final String TAG = "MainActivity";
+
 
 
     // 要切换的照片，放在drawable文件夹下
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                         // 更新界面电参
                         tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
-                        tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " %");
                         tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
@@ -205,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     if (deviceAndCameraView.getVisibility() == View.VISIBLE) {
 
                         tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
-                        tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " ℃");
+                        tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " %");
                         tv_illuminance.setText("光照度：" + nubTransition((ldDevice.getIlluminance() + MyRandom(30, 70)), 2) + "");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
@@ -332,6 +336,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void run() {
 
+                // 判断人脸识别界面是否在显示状态，不在显示状态不处理
+                if (deviceAndCameraView.getVisibility() == View.GONE) {
+                    LogUtil.e("initFaceRecognition 当前界面不显示");
+                    return;
+                }
+
                 toIndex = 0;
 
                 // 清空集合缓存
@@ -340,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }
 
                 // 获取指定目录中所有图片
-                imgs = faceRecoUtil.getFilesAllName(Environment.getExternalStorageDirectory() + "/magic");
+                imgs = faceRecoUtil.getFilesAllName(ficeFile);
                 LogUtil.e("FaceRecognitionUtil Size xxx = " + imgs.size());
                 for (String img : imgs) {
                     LogUtil.e("FaceRecognitionUtil xxx = " + img);
@@ -351,10 +361,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     return;
 
                 } else {
+                    // 如果当前图片大于需要显示的图片个数，显示图片数为需要显示图片，如果当前图片小于需要显示图片数，显示图片数为当前文件夹图片数
                     if (imgs.size() < numberUsed) {
                         toIndex = imgs.size();
                     } else {
                         toIndex = numberUsed;
+                        // 删除多余的图片
+                        for (int i = numberUsed; i < imgs.size(); i++) {
+                            File file = new File(imgs.get(i));
+                            MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{imgs.get(i)});//删除系统缩略图
+                            file.delete();//删除SD中图片
+                        }
                     }
 
                 }
@@ -364,7 +381,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         provinceAdapter.setImgs(imgs.subList(0, toIndex));
                     }
                 });
-                LogUtil.e("xxxxxxxxxxxxxxxxxxxxxx");
 
 
             }
@@ -413,7 +429,27 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 检测更新
         CheckForUpdates();
 
+        // 删除人脸识别文件夹下的所有文件
+        deleteDirWihtFile(new File(ficeFile));
+
     }
+
+    /**
+     * 删除文件夹和文件夹里面的文件
+     * @param dir 删除的文件夹
+     */
+    public static void deleteDirWihtFile(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(file); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
+    }
+
 
     /**
      * 检测是否需要更新
