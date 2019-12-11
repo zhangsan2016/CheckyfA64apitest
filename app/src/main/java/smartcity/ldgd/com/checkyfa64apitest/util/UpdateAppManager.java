@@ -101,7 +101,7 @@ public class UpdateAppManager {
                     byte[] buffer = new byte[1024];
                     int len = 0;
                     long readedLength = 0l;
-                    while ((len = in.read(buffer)) != -1) {
+                    while ((len = in.read(buffer)) != -1 && !isCancel) {
                         // 用户点击“取消”按钮，下载中断
                         if (isCancel) {
                             break;
@@ -164,6 +164,10 @@ public class UpdateAppManager {
 
     }
 
+
+    public void setCancel(boolean cancel) {
+        isCancel = cancel;
+    }
 
     public void checkUpdateInfo() {
         gethttpresult(json1);

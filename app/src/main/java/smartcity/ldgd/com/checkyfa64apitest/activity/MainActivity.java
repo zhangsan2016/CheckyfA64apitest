@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "MainActivity";
 
 
-
     // 要切换的照片，放在drawable文件夹下
     //  int[] images = {R.drawable.img55, R.drawable.img4, R.drawable.img5};
     //  int[] images = {R.drawable.img57, R.drawable.img57, R.drawable.img58};
@@ -121,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private SurfaceHolder mHolder;
     private CameraManager mCameraManager;
     private Camera mCamera;
+
+    // 更新电参的线程池
+    private ScheduledExecutorService scheduledThreadPool;
 
     private UpdateAppManager updateAppManager;
 
@@ -331,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void initFaceRecognition() {
 
         //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
-        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+        scheduledThreadPool = Executors.newScheduledThreadPool(5);
         scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -436,6 +438,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     /**
      * 删除文件夹和文件夹里面的文件
+     *
      * @param dir 删除的文件夹
      */
     public static void deleteDirWihtFile(File dir) {
@@ -477,6 +480,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     protected void onDestroy() {
         super.onDestroy();
         openSerialPort = false;
+        // 关闭跟新程序
+        if (updateAppManager != null) {
+            updateAppManager.setCancel(true);
+        }
+        // 关闭更新电参界面的线程池
+        if(scheduledThreadPool != null){
+            scheduledThreadPool.shutdown();
+        }
     }
 
     private void initPortListening() {

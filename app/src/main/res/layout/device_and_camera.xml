@@ -281,14 +281,16 @@
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"></GridView>
+        android:numColumns="2"
+        android:visibility="visible"></GridView>
 
 
-    <!--    <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/device_camera_bg" />-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/device_camera_bg" />
 
 
 </LinearLayout>
