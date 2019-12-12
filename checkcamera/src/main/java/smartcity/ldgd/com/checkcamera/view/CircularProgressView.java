@@ -1,4 +1,4 @@
-package smartcity.ldgd.com.checkyfa64apitest.view;
+package smartcity.ldgd.com.checkcamera.view;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -17,8 +17,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
-import smartcity.ldgd.com.checkyfa64apitest.R;
-
+import smartcity.ldgd.com.checkcamera.R;
 
 /**
  * Created by ldgd on 2019/12/11.

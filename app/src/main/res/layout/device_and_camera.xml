@@ -277,6 +277,11 @@
 
     </LinearLayout>
 
+
+    <include
+        android:id="@+id/view_device_camera"
+        layout="@layout/circular_progress_item" />
+
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"

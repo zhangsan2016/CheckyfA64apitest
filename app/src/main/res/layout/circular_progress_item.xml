@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#02102E"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:backColor="@color/colorPrimary"
+                app:backWidth="12dp"
+                app:progColor="#AD8CE7"
+                app:progWidth="12dp"
+                app:progress="85"
+                app:textSize="22sp" />
+
+            <!--            android:textColor="#549246"-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="温度"
+                android:textColor="#A8A0AD"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:backColor="@color/colorPrimary"
+                app:backWidth="12dp"
+                app:progColor="#88A4E5"
+                app:progWidth="12dp"
+                app:progress="66"
+                app:textSize="22sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="湿度"
+                android:textColor="#A8A0AD"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:backColor="@color/colorPrimary"
+                app:backWidth="12dp"
+                app:progColor="#E77BDE"
+                app:progWidth="12dp"
+                app:progress="35"
+                app:textSize="22sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="TVOC"
+                android:textColor="#A8A0AD"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:backColor="@color/colorPrimary"
+                app:backWidth="12dp"
+                app:max="35"
+                app:progColor="#E9EC00"
+                app:progWidth="12dp"
+                app:progress="22"
+                app:textSize="22sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="PM2.5"
+                android:textColor="#A8A0AD"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
