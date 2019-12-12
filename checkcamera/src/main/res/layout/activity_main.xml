@@ -30,7 +30,7 @@
                 app:progColor="#AD8CE7"
                 app:progWidth="12dp"
                 app:progress="85"
-                app:textSize="22sp"  />
+                app:textSize="22sp" />
 
             <!--            android:textColor="#549246"-->
             <TextView
@@ -129,6 +129,20 @@
                 android:textSize="18sp" />
 
         </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#02102E"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+
+
+
 
 
     </LinearLayout>
