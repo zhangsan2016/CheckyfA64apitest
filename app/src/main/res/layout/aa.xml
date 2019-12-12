@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#ffffff"
     android:orientation="vertical">
 
@@ -16,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#02102E"
-        android:paddingBottom="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -141,6 +142,27 @@
 
         </LinearLayout>
 
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#02102E"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+
+        <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:padding="10dp"
+            app:backColor="@color/colorProgressBg"
+            app:backWidth="15dp"
+            app:progColor="@color/colorProgress"
+            app:progWidth="15dp"
+            app:progress="85"  />
 
     </LinearLayout>
 

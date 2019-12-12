@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Camera1Sample-master/Camera1Sample-master.iml" filepath="$PROJECT_DIR$/Camera1Sample-master/Camera1Sample-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/CheckyfA64apitest.iml" filepath="$PROJECT_DIR$/CheckyfA64apitest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/checkcamera/checkcamera.iml" filepath="$PROJECT_DIR$/checkcamera/checkcamera.iml" />

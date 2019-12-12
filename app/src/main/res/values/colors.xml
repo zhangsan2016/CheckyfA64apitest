@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="color_device_text">#C9CBDA</color>
+
+    <color name="colorProgressBg">#FFCBCBCB</color>
+    <color name="colorProgress">#FF4081</color>
 </resources>

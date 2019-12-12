@@ -1,2 +1,2 @@
-include ':app', ':checkcamera', ':Camera1Sample-master'
+include ':app', ':checkcamera'
 include ':yfA64apitest'
