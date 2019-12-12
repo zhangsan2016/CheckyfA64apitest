@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         CheckForUpdates();
 
         // 删除人脸识别文件夹下的所有文件
-        deleteDirWihtFile(new File(ficeFile));
+    //    deleteDirWihtFile(new File(ficeFile));
 
     }
 

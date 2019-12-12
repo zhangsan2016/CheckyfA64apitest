@@ -39,38 +39,67 @@ public class ProvinceAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
+    public List<String> getImgs() {
+        List<String> newModelList = new ArrayList<>();
+        for (String url : imgs) {
+                newModelList.add(url);
+        }
+        return newModelList;
+    }
+
     @Override
     public int getCount() {
-        return imgs.size();
+        return 1;
     }
 
     @Override
     public Object getItem(int position) {
-        return imgs.get(position);
+        return 1;
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return 1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+
+
         ViewHolder holder = null;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.province_grid_view_item_layout, null);
+            convertView = layoutInflater.inflate(R.layout.photo_album_item, null);
             holder = new ViewHolder();
-            holder.imageView = convertView.findViewById(R.id.imageview);
+            holder.imgViews = new ArrayList<>();
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img1));
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img2));
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img3));
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img4));
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img5));
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img6));
+            holder.imgViews.add((ImageView) convertView.findViewById(R.id.img7));
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        List<String> imgs = getImgs();
 
-        if(imgs.size() > position){
-            String uri = imgs.get(position);
-            holder.imageView.setImageURI(Uri.fromFile(new File(uri)));
+        if(imgs.size() == 0){
+            return convertView;
+        }
+
+        int size;
+        if(imgs.size() > 7){
+            size = 7;
+        }else{
+            size = imgs.size();
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String uri = imgs.get(i);
+            holder.imgViews.get(i).setImageURI(Uri.fromFile(new File(uri)));
         }
 
 
@@ -80,7 +109,7 @@ public class ProvinceAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        ImageView imageView;
+       List<ImageView>  imgViews;
     }
 
 }

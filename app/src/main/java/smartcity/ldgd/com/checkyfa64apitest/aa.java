@@ -16,20 +16,18 @@ public class aa {
         int index = 15;
 
         List<String> imgs = new ArrayList<>();
-        for (int i = 0; i <= 26; i++) {
-            imgs.add("img uri " + i);
-        }
+        imgs.add("xzczxc");
+        imgs.add("xzczxc2");
+        imgs.add("xzczxc3");
+        imgs.add("xzczxc4");
 
+        System.out.println(imgs.toString());
+        List<String> img = imgs.subList(0,2);
+        System.out.println(img.toString());
 
-        for (int i = index; i < imgs.size(); i++) {
-            System.out.println(imgs.get(i));
-            imgs.clear();
-        }
+        System.out.println(imgs == img);
+        System.out.println(imgs == imgs);
 
-        for (int i = 0; i < imgs.size(); i++) {
-            System.out.println(imgs.get(i));
-        }
-        System.out.println("完毕");
 
     }
 
