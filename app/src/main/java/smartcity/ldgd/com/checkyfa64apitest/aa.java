@@ -29,6 +29,10 @@ public class aa {
         System.out.println(imgs == imgs);
 
 
+        double electricalEnergy = 100-120;
+        System.out.println(electricalEnergy);
+
+
     }
 
 
