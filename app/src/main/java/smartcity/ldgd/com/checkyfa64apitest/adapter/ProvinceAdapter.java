@@ -21,8 +21,9 @@ import smartcity.ldgd.com.checkyfa64apitest.R;
  */
 
 public class ProvinceAdapter extends BaseAdapter {
-    private List<String> imgs = new ArrayList<>();
+    private List<String> imgs;
     private LayoutInflater layoutInflater;
+    private int i = 0;
 
     public ProvinceAdapter(Context context) {
         layoutInflater = LayoutInflater.from(context);
@@ -41,6 +42,9 @@ public class ProvinceAdapter extends BaseAdapter {
 
     public List<String> getImgs() {
         List<String> newModelList = new ArrayList<>();
+        if(imgs == null){
+            return null;
+        }
         for (String url : imgs) {
                 newModelList.add(url);
         }
@@ -49,23 +53,28 @@ public class ProvinceAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        if(imgs != null){
+            return 1;
+        }
+     return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return 1;
+        return position;
     }
 
     @Override
     public long getItemId(int position) {
-        return 1;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-
+        i++;
+        System.out.println("getView i = " + i);
+        System.out.println("getView convertView == null : " + convertView == null);
 
         ViewHolder holder = null;
         if (convertView == null) {
@@ -86,23 +95,19 @@ public class ProvinceAdapter extends BaseAdapter {
 
         List<String> imgs = getImgs();
 
-        if(imgs.size() == 0){
-            return convertView;
+        if(imgs != null && imgs.size() != 0){
+            int size;
+            if(imgs.size() > 7){
+                size = 7;
+            }else{
+                size = imgs.size();
+            }
+
+            for (int i = 0; i < 7; i++) {
+                String uri = imgs.get(i);
+                holder.imgViews.get(i).setImageURI(Uri.fromFile(new File(uri)));
+            }
         }
-
-        int size;
-        if(imgs.size() > 7){
-            size = 7;
-        }else{
-            size = imgs.size();
-        }
-
-        for (int i = 0; i < 7; i++) {
-            String uri = imgs.get(i);
-            holder.imgViews.get(i).setImageURI(Uri.fromFile(new File(uri)));
-        }
-
-
 
         return convertView;
 

@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -53,7 +54,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
-import smartcity.ldgd.com.checkyfa64apitest.adapter.ProvinceAdapter;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.FaceRecoUtil;
@@ -120,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private SurfaceHolder mHolder;
     private CameraManager mCameraManager;
     private Camera mCamera;
+
+    // 人脸识别图片
+    private ImageView img1, img2, img3, img4, img5, img6, img7;
+    private List<ImageView> imgList;
 
     // 更新电参的线程池
     private ScheduledExecutorService scheduledThreadPool;
@@ -302,9 +306,26 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_wind_speed = (TextView) this.findViewById(R.id.tv_wind_speed);
         gridview = (GridView) this.findViewById(R.id.gridview);
 
+        // 人脸识别图片
+        img1 = (ImageView) this.findViewById(R.id.img1);
+        img2 = (ImageView) this.findViewById(R.id.img2);
+        img3 = (ImageView) this.findViewById(R.id.img3);
+        img4 = (ImageView) this.findViewById(R.id.img4);
+        img5 = (ImageView) this.findViewById(R.id.img5);
+        img6 = (ImageView) this.findViewById(R.id.img6);
+        img7 = (ImageView) this.findViewById(R.id.img7);
+        imgList = new ArrayList<>();
+        imgList.add(img1);
+        imgList.add(img2);
+        imgList.add(img3);
+        imgList.add(img4);
+        imgList.add(img5);
+        imgList.add(img6);
+        imgList.add(img7);
 
-        provinceAdapter = new ProvinceAdapter(this);
-        gridview.setAdapter(provinceAdapter);
+
+       /* provinceAdapter = new ProvinceAdapter(this);
+        gridview.setAdapter(provinceAdapter);*/
 
         // 初始化动画
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -324,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private List<String> imgs;
     private FaceRecoUtil faceRecoUtil = new FaceRecoUtil();
-    private ProvinceAdapter provinceAdapter;
+    //  private ProvinceAdapter provinceAdapter;
     // 需要使用图片个数
     private int numberUsed = 15;
     // list截取的位置
@@ -333,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void initFaceRecognition() {
 
         //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
-        scheduledThreadPool = Executors.newScheduledThreadPool(5);
+        scheduledThreadPool = Executors.newScheduledThreadPool(1);
         scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -359,7 +380,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }
 
                 if (imgs == null && imgs.size() == 0) {
-                    provinceAdapter.notifyDataSetChanged();
+                    System.out.println("provinceAdapter.notifyDataSetChanged()");
+                    //   provinceAdapter.notifyDataSetChanged();
                     return;
 
                 } else {
@@ -380,7 +402,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        provinceAdapter.setImgs(imgs.subList(0, toIndex));
+                        // provinceAdapter.setImgs(imgs.subList(0, toIndex));
+                        int size;
+                        if (imgs.size() > 7) {
+                            size = 7;
+                        }else {
+                            size = imgs.size();
+                        }
+                        for (int i = 0; i < size; i++) {
+                            imgList.get(i).setImageURI(Uri.fromFile(new File(imgs.get(i))));
+                        }
+
                     }
                 });
 
@@ -432,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         CheckForUpdates();
 
         // 删除人脸识别文件夹下的所有文件
-    //    deleteDirWihtFile(new File(ficeFile));
+        //    deleteDirWihtFile(new File(ficeFile));
 
     }
 
@@ -485,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             updateAppManager.setCancel(true);
         }
         // 关闭更新电参界面的线程池
-        if(scheduledThreadPool != null){
+        if (scheduledThreadPool != null) {
             scheduledThreadPool.shutdown();
         }
     }

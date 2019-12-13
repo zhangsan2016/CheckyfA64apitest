@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +27,8 @@
                 app:backWidth="12dp"
                 app:progColor="#AD8CE7"
                 app:progWidth="12dp"
-                app:progress="85"
+                app:progress="25"
+                app:max="40"
                 app:textSize="22sp" />
 
             <!--            android:textColor="#549246"-->

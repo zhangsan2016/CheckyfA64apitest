@@ -278,16 +278,22 @@
     </LinearLayout>
 
 
+    <!-- 湿度温度饼状图 -->
     <include
         android:id="@+id/view_device_camera"
         layout="@layout/circular_progress_item" />
+
+    <!-- 人脸识别模块 -->
+    <include
+        layout="@layout/photo_album_item" />
+
 
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="2"
-        android:visibility="visible"></GridView>
+        android:visibility="gone"></GridView>
 
 
     <ImageView
