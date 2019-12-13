@@ -171,7 +171,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/electric_parameter_bg"
                 android:gravity="center"
-                android:text="光照度：2241"
+                android:text="光照度：2241 lux"
                 android:textColor="@color/color_device_text" />
 
 

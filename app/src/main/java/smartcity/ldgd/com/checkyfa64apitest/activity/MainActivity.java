@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         // 更新界面电参
                         tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
                         tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " %");
-                        tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + "");
+                        tv_illuminance.setText("光照度：" + (ldDevice.getIlluminance()) + " lux");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                         tv_temperature.setText("温度：" + (ldDevice.getTemperature() / 10) + " ℃");
                         tv_humidity.setText("湿度：" + (ldDevice.getHumidity() / 10) + " %");
-                        tv_illuminance.setText("光照度：" + nubTransition((ldDevice.getIlluminance() + MyRandom(30, 70)), 2) + "");
+                        tv_illuminance.setText("光照度：" + nubTransition((ldDevice.getIlluminance() + MyRandom(30, 70)), 2) + " lux");
                         tv_voltage.setText("电压：" + (ldDevice.getVoltage() / 100) + " V");
                         tv_electricity.setText("电流：" + (ldDevice.getElectricity() / 100) + " A");
                         tv_power.setText("功率：" + (ldDevice.getPower() / 10) + " W");
