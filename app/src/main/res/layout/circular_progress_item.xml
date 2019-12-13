@@ -87,6 +87,7 @@
                 app:backWidth="12dp"
                 app:progColor="#E77BDE"
                 app:progWidth="12dp"
+                app:max="50"
                 app:progress="35"
                 app:textSize="22sp" />
 
@@ -113,7 +114,7 @@
                 android:layout_marginRight="10dp"
                 app:backColor="@color/colorPrimary"
                 app:backWidth="12dp"
-                app:max="35"
+                app:max="40"
                 app:progColor="#E9EC00"
                 app:progWidth="12dp"
                 app:progress="22"
