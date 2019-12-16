@@ -21,7 +21,6 @@ import java.util.List;
 
 public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Camera.AutoFocusCallback {
 
-
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private static final int ORIENTATION = 90;

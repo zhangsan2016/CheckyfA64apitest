@@ -10,7 +10,11 @@
         <attr name="progFirstColor" format="color" />   <!--进度圆环结束颜色-->
         <attr name="progress" format="integer" />       <!--圆环进度-->
         <attr name="max" format="integer" />            <!--圆环进度最大值-->
-        <attr name="textSize" format="dimension" />       <!--文字大小-->
+        <attr name="textSize" format="dimension" />     <!--文字大小-->
+        <attr name="textType" format="enum">            <!-- text 类型 数字或者文字-->
+            <enum name="num" value="0" />
+            <enum name="text" value="1" />
+        </attr>
     </declare-styleable>
 
 </resources>

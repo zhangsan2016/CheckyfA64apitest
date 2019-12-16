@@ -27,6 +27,10 @@ import smartcity.ldgd.com.checkyfa64apitest.R;
  */
 
 public class CircularProgressView extends View {
+    // 进度中间显示的类型
+    public static final int NUM = 0;
+    public static final int TEXT = 1;
+    private  int textType = 0;
 
     private Paint mBackPaint, mProgPaint;   // 绘制画笔
     private RectF mRectF;       // 绘制区域
@@ -47,6 +51,9 @@ public class CircularProgressView extends View {
         super(context, attrs, defStyleAttr);
         @SuppressLint("Recycle")
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
+
+        // 获取字体类型
+        textType = typedArray.getInteger(R.styleable.CircularProgressView_textType, 0);
 
         // 初始化背景圆环画笔
         mBackPaint = new Paint();
@@ -104,6 +111,7 @@ public class CircularProgressView extends View {
         canvas.drawArc(mRectF, 0, 360, false, mBackPaint);
         canvas.drawArc(mRectF, 275, 360 * mProgress / max, false, mProgPaint);
 
+        // 绘制字体
         Paint mPaint = new Paint();
         mPaint.setTextSize(textSize);
         mPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
@@ -112,9 +120,17 @@ public class CircularProgressView extends View {
         mPaint.setColor(Color.WHITE);
        // mPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
-        float x = getWidth() / 2 - mPaint.measureText(String.valueOf(mProgress)) / 2;
-        float y = getHeight() / 2 + (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom;
-        canvas.drawText(String.valueOf(mProgress), x, y, mPaint);
+        if(textType == NUM){
+            float x = getWidth() / 2 - mPaint.measureText(String.valueOf(mProgress)) / 2;
+            float y = getHeight() / 2 + (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom;
+            canvas.drawText(String.valueOf(mProgress), x, y, mPaint);
+        }else if (textType == TEXT){
+
+            float x = getWidth() / 2 - mPaint.measureText(String.valueOf("优")) / 2;
+            float y = getHeight() / 2 + (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom;
+            canvas.drawText(String.valueOf("优"), x, y, mPaint);
+        }
+
     }
 
 

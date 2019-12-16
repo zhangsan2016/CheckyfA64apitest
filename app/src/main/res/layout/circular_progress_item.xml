@@ -25,10 +25,10 @@
                 android:layout_marginRight="10dp"
                 app:backColor="@color/colorPrimary"
                 app:backWidth="12dp"
+                app:max="40"
                 app:progColor="#AD8CE7"
                 app:progWidth="12dp"
                 app:progress="25"
-                app:max="40"
                 app:textSize="22sp" />
 
             <!--            android:textColor="#549246"-->
@@ -79,17 +79,18 @@
             android:orientation="vertical">
 
             <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
-                android:layout_width="68dp"
+                android:layout_width="62dp"
                 android:layout_height="68dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 app:backColor="@color/colorPrimary"
                 app:backWidth="12dp"
+                app:max="50"
                 app:progColor="#E77BDE"
                 app:progWidth="12dp"
-                app:max="50"
                 app:progress="35"
-                app:textSize="22sp" />
+                app:textSize="22sp"
+                app:textType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -118,7 +119,8 @@
                 app:progColor="#E9EC00"
                 app:progWidth="12dp"
                 app:progress="22"
-                app:textSize="22sp" />
+                app:textSize="22sp"
+                app:textType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
