@@ -7,7 +7,7 @@ android {
         applicationId "smartcity.ldgd.com.checkyfa64apitest"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 11
+        versionCode 12
         versionName "1.2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -16,6 +16,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 }
 
@@ -30,6 +34,12 @@ dependencies {
     // Android串口通信
     compile 'com.aill:AndroidSerialPort:1.0.8'
     compile files('libs/yf_a64_api.jar')
+    compile files('libs/ftpserver-core-1.0.6.jar')
+    compile files('libs/commons-net-ftp-2.0.jar')
+    compile files('libs/slf4j-api-1.5.2.jar')
+    compile files('libs/slf4j-log4j12-1.5.2.jar')
+    compile files('libs/log4j-1.2.14.jar')
+     compile files('libs/mina-core-2.0.4.jar')
     // Android的动画指纹图标提供了一个简单的，独立的库。
     compile 'com.mattprecious.swirl:swirl:1.0.0'
     /* Okhttp3*/

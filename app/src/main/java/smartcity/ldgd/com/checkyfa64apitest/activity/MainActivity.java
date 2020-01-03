@@ -57,6 +57,7 @@ import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.util.FaceRecoUtil;
+import smartcity.ldgd.com.checkyfa64apitest.util.FtpManager;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.UpdateAppManager;
@@ -273,6 +274,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 初始化人脸识别
         initFaceRecognition();
 
+        // 开启 Ftp 服务器
+        startFtpService();
+
 
      /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
         openAPKFile(MainActivity.this, path);*/
@@ -288,6 +292,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             e.printStackTrace();
         }*/
 
+    }
+
+    private void startFtpService() {
+        String config = getString(R.string.users);
+        FtpManager ftpManager = FtpManager.getInstance(config);
+        ftpManager.startServer();
     }
 
 
@@ -526,6 +536,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (scheduledThreadPool != null) {
             scheduledThreadPool.shutdown();
         }
+        // 关闭ftp
+
+        FtpManager.getInstance( getString(R.string.users)).stopFtpServer();
     }
 
     private void initPortListening() {
