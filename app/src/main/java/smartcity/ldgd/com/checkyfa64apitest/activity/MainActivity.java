@@ -537,7 +537,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             scheduledThreadPool.shutdown();
         }
         // 关闭ftp
-
         FtpManager.getInstance( getString(R.string.users)).stopFtpServer();
     }
 
