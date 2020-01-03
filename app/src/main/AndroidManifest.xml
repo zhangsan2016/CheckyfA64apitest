@@ -3,6 +3,8 @@
     package="smartcity.ldgd.com.checkyfa64apitest"
     android:installLocation="internalOnly">
 
+    <!-- http://134.175.135.19:8089/APP/upapp -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_app_bg"

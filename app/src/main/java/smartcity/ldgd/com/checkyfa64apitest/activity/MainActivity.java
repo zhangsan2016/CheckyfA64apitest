@@ -60,6 +60,7 @@ import smartcity.ldgd.com.checkyfa64apitest.util.FaceRecoUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.UpdateAppManager;
+import smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView;
 
 import static smartcity.ldgd.com.checkyfa64apitest.util.MyByteUtil.bytesIntHL;
 
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 串口
     private SerialPort mSerialPort;
+    private CircularProgressView cpv_wendu,cpv_shidu;
 
     // 相机显示
     private SurfaceView scanPreview;
@@ -224,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         tv_power_factor.setText("功率因数：" + (ldDevice.getPowerFactor() / 1000) + "");
                         tv_leak_curt.setText("漏电电流：" + (int) (ldDevice.getLeakCurrent()) + " mA");
                         tv_wind_speed.setText(" 风速：" + nubTransition(MyRandom(15, 23), 2) + " m/s");
+                        cpv_shidu.setProgress((int) (ldDevice.getHumidity() / 10));
+                        cpv_wendu.setProgress((int) (ldDevice.getTemperature() / 10));
                     }
 
                     break;
@@ -305,6 +309,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         tv_illuminance = (TextView) this.findViewById(R.id.tv_illuminance);
         tv_wind_speed = (TextView) this.findViewById(R.id.tv_wind_speed);
         gridview = (GridView) this.findViewById(R.id.gridview);
+        cpv_wendu = (CircularProgressView) this.findViewById(R.id.cpv_wendu);
+        cpv_shidu = (CircularProgressView) this.findViewById(R.id.cpv_shidu);
 
         // 人脸识别图片
         img1 = (ImageView) this.findViewById(R.id.img1);

@@ -19,6 +19,7 @@
             android:orientation="vertical">
 
             <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+                android:id="@+id/cpv_wendu"
                 android:layout_width="68dp"
                 android:layout_height="68dp"
                 android:layout_marginLeft="10dp"
@@ -50,6 +51,7 @@
             android:orientation="vertical">
 
             <smartcity.ldgd.com.checkyfa64apitest.view.CircularProgressView
+                android:id="@+id/cpv_shidu"
                 android:layout_width="68dp"
                 android:layout_height="68dp"
                 android:layout_marginLeft="10dp"
