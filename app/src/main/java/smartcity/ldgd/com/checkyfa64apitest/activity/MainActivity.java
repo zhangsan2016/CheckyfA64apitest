@@ -38,7 +38,13 @@ import com.aill.androidserialport.SerialPort;
 import com.aill.androidserialport.SerialPortFinder;
 import com.example.yf_a64_api.YF_A64_API_Manager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -80,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             "android.permission.WRITE_EXTERNAL_STORAGE"};
     // 人脸识别存放目录
     private String ficeFile = Environment.getExternalStorageDirectory() + "/magic";
+    // 广告配置文件地址
+    private String adConfigFile = Environment.getExternalStorageDirectory() + "/AdConfig";
     private static final String TAG = "MainActivity";
 
 
@@ -115,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     // 串口
     private SerialPort mSerialPort;
-    private CircularProgressView cpv_wendu,cpv_shidu;
+    private CircularProgressView cpv_wendu, cpv_shidu;
 
     // 相机显示
     private SurfaceView scanPreview;
@@ -294,6 +302,35 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
+    public String getAdConfig(File filePath) {
+
+        StringBuilder text = new StringBuilder();
+        BufferedReader br = null;
+        try {
+            if (!filePath.exists() ) {
+                return null;
+            }
+
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line;
+
+        try {
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        return text.toString();
+
+    }
+
     private void startFtpService() {
         String config = getString(R.string.users);
         FtpManager ftpManager = FtpManager.getInstance(config);
@@ -422,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         int size;
                         if (imgs.size() > 7) {
                             size = 7;
-                        }else {
+                        } else {
                             size = imgs.size();
                         }
                         for (int i = 0; i < size; i++) {
@@ -457,24 +494,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onResume() {
         super.onResume();
-        // 摄像头开启预览
-        //  videoView.setVideoURI(Uri.parse("rtsp://192.168.1.72:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
-        videoView.setVideoURI(Uri.parse("rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream"));
-        //  rtsp://192.168.2.100:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E
-        // videoView.setVideoURI(Uri.parse("rtsp://192.168.2.156:554/stream0?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E"));
 
-
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-
-
-                LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
-                return true;
-            }
-        });
-        videoView.start();
-        videoView.requestFocus();
+        // 启动人脸镜头
+        startFaceTheCamera();
 
         // 检测更新
         CheckForUpdates();
@@ -482,6 +504,41 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 删除人脸识别文件夹下的所有文件
         //    deleteDirWihtFile(new File(ficeFile));
 
+    }
+
+    private void startFaceTheCamera() {
+
+        String uri = "rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream";
+
+        // 从配置文件中获取摄像头地址
+        String adConfig = getAdConfig(new File(adConfigFile, "ad_config.properties"));
+        if (adConfig != null && adConfig.length() > 0) {
+            try {
+                JSONObject deviceObj = new JSONObject(adConfig);
+                String rtspUrl = (String) deviceObj.opt("face_camera");
+                if (rtspUrl != null) {
+                    uri = rtspUrl;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        LogUtil.e("xxx uri = " + uri);
+
+        // 摄像头开启预览
+        videoView.setVideoURI(Uri.parse(uri));
+
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
+                return true;
+            }
+        });
+        videoView.start();
+        videoView.requestFocus();
     }
 
     /**
@@ -537,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             scheduledThreadPool.shutdown();
         }
         // 关闭ftp
-        FtpManager.getInstance( getString(R.string.users)).stopFtpServer();
+        FtpManager.getInstance(getString(R.string.users)).stopFtpServer();
     }
 
     private void initPortListening() {
