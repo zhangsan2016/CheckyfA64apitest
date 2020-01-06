@@ -121,6 +121,7 @@ public class FtpManager {
             francis.setPassword("francis");
             francis.setName("francis");
             userManager.save(francis); // 修改账户信息
+
         } catch (FtpException e) {
             e.printStackTrace();
         }
