@@ -7,8 +7,11 @@ import android.widget.TextView;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
+import org.apache.ftpserver.usermanager.impl.BaseUser;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -97,6 +100,31 @@ public class FtpManager {
         }
         //设置配置文件
         userManagerFactory.setFile(files);
+
+
+       /* try {
+            // 账户信息（也可以新增用户）
+            UserManager userManager = userManagerFactory.createUserManager();
+            BaseUser user = null;
+            user = (BaseUser) userManager.getUserByName("admin");
+            user.setPassword("admin123456");
+            userManager.save(user); // 修改账户信息
+        } catch (FtpException e) {
+            e.printStackTrace();
+        }*/
+
+       // 添加 ftp 用户
+        try {
+            // 账户信息（也可以新增用户）
+            UserManager userManager = userManagerFactory.createUserManager();
+            BaseUser  francis  = new BaseUser(userManager.getUserByName("admin"));
+            francis.setPassword("francis");
+            francis.setName("francis");
+            userManager.save(francis); // 修改账户信息
+        } catch (FtpException e) {
+            e.printStackTrace();
+        }
+
         serverFactory.setUserManager(userManagerFactory.createUserManager());
         // 设置监听IP和端口号
         ListenerFactory factory = new ListenerFactory();
