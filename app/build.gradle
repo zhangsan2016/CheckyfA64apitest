@@ -7,7 +7,7 @@ android {
         applicationId "smartcity.ldgd.com.checkyfa64apitest"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 13
+        versionCode 14
         versionName "1.2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
