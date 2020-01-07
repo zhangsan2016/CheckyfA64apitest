@@ -33,9 +33,9 @@ ftpserver.user.admin.maxloginperip=10\r\n
 
 ftpserver.user.admin.idletime=3000\r\n
 
-ftpserver.user.admin.uploadrate=4800\r\n
+ftpserver.user.admin.uploadrate=480000\r\n
 
-ftpserver.user.admin.downloadrate=4800\r\n
+ftpserver.user.admin.downloadrate=480000\r\n
 
 ftpserver.user.anonymous.userpassword=anonymous\r\n
 
