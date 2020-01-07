@@ -501,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         CheckForUpdates();
 
         // 删除人脸识别文件夹下的所有文件
-        //    deleteDirWihtFile(new File(ficeFile));
+        deleteDirWihtFile(new File(ficeFile));
 
     }
 
@@ -524,8 +524,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         }
 
-        LogUtil.e("xxx uri = " + uri);
-      //  tv_alarm_status.setText("uri =  " + uri);
 
         // 摄像头开启预览
         videoView.setVideoURI(Uri.parse(uri));
@@ -533,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
+              //  LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
                 return true;
             }
         });

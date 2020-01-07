@@ -27,15 +27,15 @@ ftpserver.user.admin.enableflag=true\r\n
 
 ftpserver.user.admin.writepermission=true\r\n
 
-ftpserver.user.admin.maxloginnumber=10\r\n
+ftpserver.user.admin.maxloginnumber=20\r\n
 
-ftpserver.user.admin.maxloginperip=10\r\n
+ftpserver.user.admin.maxloginperip=20\r\n
 
 ftpserver.user.admin.idletime=3000\r\n
 
-ftpserver.user.admin.uploadrate=480000\r\n
+ftpserver.user.admin.uploadrate=48000000\r\n
 
-ftpserver.user.admin.downloadrate=480000\r\n
+ftpserver.user.admin.downloadrate=48000000\r\n
 
 ftpserver.user.anonymous.userpassword=anonymous\r\n
 
