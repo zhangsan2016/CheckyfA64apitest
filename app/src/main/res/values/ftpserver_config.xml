@@ -41,7 +41,7 @@ ftpserver.user.anonymous.userpassword=anonymous\r\n
 
 ftpserver.user.anonymous.homedirectory=/mnt/sdcard\r\n
 
-ftpserver.user.anonymous.enableflag=true\r\n
+ftpserver.user.anonymous.enableflag=false\r\n
 
 ftpserver.user.anonymous.writepermission=false\r\n
 

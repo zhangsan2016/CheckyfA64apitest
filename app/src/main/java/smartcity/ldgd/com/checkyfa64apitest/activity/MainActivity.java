@@ -526,6 +526,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
 
         LogUtil.e("xxx uri = " + uri);
+        tv_alarm_status.setText(uri);
 
         // 摄像头开启预览
         videoView.setVideoURI(Uri.parse(uri));
