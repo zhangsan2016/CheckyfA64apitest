@@ -406,10 +406,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void initFaceRecognition() {
 
         //定期检查刷新数据... 	 开启一个线程，检查有效期...(过期自动删除缓存)
-        scheduledThreadPool = Executors.newScheduledThreadPool(1);
+        scheduledThreadPool = Executors.newScheduledThreadPool(2);
         scheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
+
+                LogUtil.e("initFaceRecognition 线程运行");
 
                 // 判断人脸识别界面是否在显示状态，不在显示状态不处理
                 if (deviceAndCameraView.getVisibility() == View.GONE) {
@@ -417,62 +419,72 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     return;
                 }
 
-                toIndex = 0;
-
-                // 清空集合缓存
-                if (imgs != null && imgs.size() > 0) {
-                    imgs.clear();
-                }
-
-                // 获取指定目录中所有图片
-                imgs = faceRecoUtil.getFilesAllName(ficeFile);
-                LogUtil.e("FaceRecognitionUtil Size xxx = " + imgs.size());
-                for (String img : imgs) {
-                    LogUtil.e("FaceRecognitionUtil xxx = " + img);
-                }
-
-                if (imgs == null && imgs.size() == 0) {
-                    System.out.println("provinceAdapter.notifyDataSetChanged()");
-                    //   provinceAdapter.notifyDataSetChanged();
-                    return;
-
-                } else {
-                    // 如果当前图片大于需要显示的图片个数，显示图片数为需要显示图片，如果当前图片小于需要显示图片数，显示图片数为当前文件夹图片数
-                    if (imgs.size() < numberUsed) {
-                        toIndex = imgs.size();
-                    } else {
-                        toIndex = numberUsed;
-                        // 删除多余的图片
-                        for (int i = numberUsed; i < imgs.size(); i++) {
-                            File file = new File(imgs.get(i));
-                            MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{imgs.get(i)});//删除系统缩略图
-                            file.delete();//删除SD中图片
-                        }
-                    }
-
-                }
-                runOnUiThread(new Runnable() {
+                // 显示人脸头像
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        // provinceAdapter.setImgs(imgs.subList(0, toIndex));
-                        int size;
-                        if (imgs.size() > 7) {
-                            size = 7;
-                        } else {
-                            size = imgs.size();
-                        }
-                        for (int i = 0; i < size; i++) {
-                            imgList.get(i).setImageURI(Uri.fromFile(new File(imgs.get(i))));
-                        }
-
+                        showFaceImage();
                     }
-                });
+                }).start();
+
 
 
             }
         }, 0, 1, TimeUnit.SECONDS);
         //参数第一次执行时间，间隔执行时间,执行时间单位
 
+    }
+
+    private synchronized void showFaceImage() {
+        toIndex = 0;
+        // 清空集合缓存
+        if (imgs != null && imgs.size() > 0) {
+            imgs.clear();
+        }
+
+        // 获取指定目录中所有图片
+        imgs = faceRecoUtil.getFilesAllName(ficeFile);
+        LogUtil.e("initFaceRecognition Size xxx = " + imgs.size());
+        for (String img : imgs) {
+            LogUtil.e("initFaceRecognition xxx = " + img);
+        }
+
+        if (imgs == null && imgs.size() == 0) {
+          //   System.out.println("provinceAdapter.notifyDataSetChanged()");
+            //   provinceAdapter.notifyDataSetChanged();
+            return;
+
+        } else {
+            // 如果当前图片大于需要显示的图片个数，显示图片数为需要显示图片，如果当前图片小于需要显示图片数，显示图片数为当前文件夹图片数
+            if (imgs.size() < numberUsed) {
+                toIndex = imgs.size();
+            } else {
+                toIndex = numberUsed;
+                // 删除多余的图片
+                for (int i = numberUsed; i < imgs.size(); i++) {
+                    File file = new File(imgs.get(i));
+                    MainActivity.this.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{imgs.get(i)});//删除系统缩略图
+                    file.delete();//删除SD中图片
+                }
+            }
+
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // provinceAdapter.setImgs(imgs.subList(0, toIndex));
+                int size;
+                if (imgs.size() > 7) {
+                    size = 7;
+                } else {
+                    size = imgs.size();
+                }
+                for (int i = 0; i < size; i++) {
+                    imgList.get(i).setImageURI(Uri.fromFile(new File(imgs.get(i))));
+                }
+
+            }
+        });
     }
 
     public static void verifyStoragePermissions(Activity activity) {
