@@ -411,11 +411,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void run() {
 
-                LogUtil.e("initFaceRecognition 线程运行");
+             //   LogUtil.e("initFaceRecognition 线程运行");
 
                 // 判断人脸识别界面是否在显示状态，不在显示状态不处理
                 if (deviceAndCameraView.getVisibility() == View.GONE) {
-                    LogUtil.e("initFaceRecognition 当前界面不显示");
+               //     LogUtil.e("initFaceRecognition 当前界面不显示");
                     return;
                 }
 
