@@ -160,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         // 隐藏其他界面
                         deviceAndCameraView.setVisibility(View.GONE);
 
-
                     }
                     break;
                 case STOP_DEVICE_AND_CAMERA:
@@ -181,6 +180,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         deviceAndCameraView.setVisibility(View.VISIBLE);
                         // 隐藏其他界面
                         fingerprintView.setVisibility(View.GONE);
+
+                        // 重新开启摄像头
+                        if (!videoView.isPlaying()){
+                            startFaceTheCamera();
+                        }
+
 
 
                         // 更新界面电参
@@ -517,25 +522,26 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
+    // String uri = "rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream";
+    String uri;
     private void startFaceTheCamera() {
 
-        String uri = "rtsp://192.168.1.75:554/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp?real_stream";
-
-        // 从配置文件中获取摄像头地址
-        String adConfig = getAdConfig(new File(adConfigFile, "ad_config.properties"));
-        if (adConfig != null && adConfig.length() > 0) {
-            try {
-                JSONObject deviceObj = new JSONObject(adConfig);
-                String rtspUrl = (String) deviceObj.opt("face_camera");
-                if (rtspUrl != null) {
-                    uri = rtspUrl;
+        if(uri == null || uri.isEmpty()){
+            // 从配置文件中获取摄像头地址
+            String adConfig = getAdConfig(new File(adConfigFile, "ad_config.properties"));
+            if (adConfig != null && adConfig.length() > 0) {
+                try {
+                    JSONObject deviceObj = new JSONObject(adConfig);
+                    String rtspUrl = (String) deviceObj.opt("face_camera");
+                    if (rtspUrl != null) {
+                        uri = rtspUrl;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
-
         }
-
 
         // 摄像头开启预览
         videoView.setVideoURI(Uri.parse(uri));
