@@ -3,9 +3,10 @@ package smartcity.ldgd.com.checkyfa64apitest.activity;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.VideoView;
+
+import androidx.annotation.Nullable;
 
 import smartcity.ldgd.com.checkyfa64apitest.R;
 
