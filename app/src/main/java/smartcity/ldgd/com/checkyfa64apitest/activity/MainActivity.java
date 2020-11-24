@@ -544,17 +544,21 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
 
         // 摄像头开启预览
-        videoView.setVideoURI(Uri.parse(uri));
+        if(uri != null){
+            videoView.setVideoURI(Uri.parse(uri));
+            videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    //  LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
+                    return true;
+                }
+            });
+            videoView.start();
+            videoView.requestFocus();
+        }
 
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-              //  LogUtil.e("xxxxxxxxxxxxx setOnErrorListener");
-                return true;
-            }
-        });
-        videoView.start();
-        videoView.requestFocus();
+
+
     }
 
     /**

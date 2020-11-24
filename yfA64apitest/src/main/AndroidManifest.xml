@@ -7,9 +7,9 @@
 
     <!-- yfA64广告屏 Demo-->
 
-    <uses-sdk
+<!--    <uses-sdk
         android:minSdkVersion="19"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="21" />-->
 
     <application
         android:allowBackup="true"

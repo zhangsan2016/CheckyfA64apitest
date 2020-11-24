@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CheckyfA64apitest.iml" filepath="$PROJECT_DIR$/CheckyfA64apitest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/checkcamera/checkcamera.iml" filepath="$PROJECT_DIR$/checkcamera/checkcamera.iml" />
-      <module fileurl="file://$PROJECT_DIR$/yfA64apitest/yfA64apitest.iml" filepath="$PROJECT_DIR$/yfA64apitest/yfA64apitest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CheckyfA64apitest.iml" filepath="$PROJECT_DIR$/CheckyfA64apitest.iml" group="CheckyfA64apitest" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="CheckyfA64apitest/app" />
+      <module fileurl="file://$PROJECT_DIR$/checkcamera/checkcamera.iml" filepath="$PROJECT_DIR$/checkcamera/checkcamera.iml" group="CheckyfA64apitest/checkcamera" />
+      <module fileurl="file://$PROJECT_DIR$/yfA64apitest/yfA64apitest.iml" filepath="$PROJECT_DIR$/yfA64apitest/yfA64apitest.iml" group="CheckyfA64apitest/yfA64apitest" />
     </modules>
   </component>
 </project>
