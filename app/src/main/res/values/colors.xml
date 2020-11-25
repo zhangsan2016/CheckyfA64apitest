@@ -8,4 +8,7 @@
 
     <color name="colorProgressBg">#FFCBCBCB</color>
     <color name="colorProgress">#FF4081</color>
+
+    <color name="primary">#ff5e00</color>
+    <color name="background">#444444</color>
 </resources>

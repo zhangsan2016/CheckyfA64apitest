@@ -23,6 +23,18 @@
 
         <activity android:name=".activity.rtspActivity"></activity>
 
+        <activity
+            android:name=".activity.CallActivity"
+            android:noHistory="true"
+            android:launchMode="singleTop"
+            android:supportsPictureInPicture="true"
+            android:resizeableActivity="true"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".services.LinphoneService"
+            android:label="@string/app_name" />
+
         <!--注册接收系统开机广播消息的广播接收者-->
         <receiver
             android:name=".broadcastReceiver.MyBroadcastReceiver"
@@ -59,6 +71,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
 
 

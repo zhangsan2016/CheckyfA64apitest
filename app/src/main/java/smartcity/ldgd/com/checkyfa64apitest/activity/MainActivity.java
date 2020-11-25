@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
@@ -23,10 +24,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -41,6 +44,12 @@ import com.example.yf_a64_api.YF_A64_API_Manager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.linphone.core.AccountCreator;
+import org.linphone.core.Address;
+import org.linphone.core.CallParams;
+import org.linphone.core.Core;
+import org.linphone.core.ProxyConfig;
+import org.linphone.core.TransportType;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,6 +72,7 @@ import java.util.concurrent.TimeUnit;
 import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
+import smartcity.ldgd.com.checkyfa64apitest.services.LinphoneService;
 import smartcity.ldgd.com.checkyfa64apitest.util.FaceRecoUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.FtpManager;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
@@ -291,6 +301,27 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         startFtpService();
 
 
+        // 一键报警测试
+        Button bt_alarm = this.findViewById(R.id.bt_AKeyAlarm);
+        bt_alarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Core core = LinphoneService.getCore();
+                if(core != null){
+                    Address addressToCall = core.interpretUrl("1010");
+                    CallParams params = core.createCallParams(null);
+                    params.enableVideo(true);
+                    if (addressToCall != null) {
+                        core.inviteAddressWithParams(addressToCall, params);
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this, "网路连接失败，请联系管理员！", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
      /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
         openAPKFile(MainActivity.this, path);*/
 
@@ -399,6 +430,51 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         verifyStoragePermissions(this);
 
 
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // 开启视频通话服务（一键报警功能）
+        if (!LinphoneService.isReady()) {
+            // If it's not, let's start it
+            startService(new Intent().setClass(this, LinphoneService.class));
+            // And wait for it to be ready, so we can safely use it afterwards
+            new ServiceWaitThread().start();
+        }
+    }
+
+    // This thread will periodically check if the Service is ready, and then call onServiceReady
+    private class ServiceWaitThread extends Thread {
+        public void run() {
+            while (!LinphoneService.isReady()) {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("waiting thread sleep() has been interrupted");
+                }
+            }
+
+            // 登录linphone帐号
+            ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
+            if (proxyConfig == null) {
+
+                AccountCreator mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
+                mAccountCreator.setUsername("1000");
+                mAccountCreator.setPassword("1867668");
+                mAccountCreator.setDomain("120.26.216.74");
+                mAccountCreator.setTransport(TransportType.Udp);
+                // This will automatically create the proxy config and auth info and add them to the Core
+                ProxyConfig cfg = mAccountCreator.createProxyConfig();
+                // Make sure the newly created one is the default
+                LinphoneService.getCore().setDefaultProxyConfig(cfg);
+
+            }
+
+        }
     }
 
     private List<String> imgs;
