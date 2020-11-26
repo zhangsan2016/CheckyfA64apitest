@@ -50,6 +50,7 @@ import org.linphone.core.CallParams;
 import org.linphone.core.Core;
 import org.linphone.core.ProxyConfig;
 import org.linphone.core.TransportType;
+import org.linphone.core.Transports;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -310,6 +311,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 if(core != null){
                     Address addressToCall = core.interpretUrl("1010");
                     CallParams params = core.createCallParams(null);
+
+                    // 设置端口号
+                    Transports transports = core.getTransports();
+                    transports.setUdpPort(5060);
+                    transports.setTcpPort(5060);
+                    transports.setTlsPort(-1);
+                    core.setTransports(transports);
+
                     params.enableVideo(true);
                     if (addressToCall != null) {
                         core.inviteAddressWithParams(addressToCall, params);
