@@ -312,13 +312,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     Address addressToCall = core.interpretUrl("1010");
                     CallParams params = core.createCallParams(null);
 
-                    // 设置端口号
-                    Transports transports = core.getTransports();
-                    transports.setUdpPort(5060);
-                    transports.setTcpPort(5060);
-                    transports.setTlsPort(-1);
-                    core.setTransports(transports);
-
                     params.enableVideo(true);
                     if (addressToCall != null) {
                         core.inviteAddressWithParams(addressToCall, params);
@@ -470,6 +463,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             // 登录linphone帐号
             ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
             if (proxyConfig == null) {
+
+                // 设置端口号
+                  /*  Transports transports = core.getTransports();
+                    transports.setUdpPort(5060);
+                    transports.setTcpPort(5060);
+                    transports.setTlsPort(-1);
+                    core.setTransports(transports);*/
 
                 AccountCreator mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
                 mAccountCreator.setUsername("1000");
