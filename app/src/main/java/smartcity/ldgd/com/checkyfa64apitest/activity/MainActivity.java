@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 AccountCreator mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
                 mAccountCreator.setUsername("1000");
                 mAccountCreator.setPassword("1867668");
-                mAccountCreator.setDomain("120.26.216.74");
+                mAccountCreator.setDomain("120.26.216.74:16384");
                 mAccountCreator.setTransport(TransportType.Udp);
                 // This will automatically create the proxy config and auth info and add them to the Core
                 ProxyConfig cfg = mAccountCreator.createProxyConfig();
