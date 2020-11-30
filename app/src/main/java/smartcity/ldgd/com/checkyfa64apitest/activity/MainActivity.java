@@ -48,7 +48,9 @@ import org.linphone.core.AccountCreator;
 import org.linphone.core.Address;
 import org.linphone.core.CallParams;
 import org.linphone.core.Core;
+import org.linphone.core.CoreListenerStub;
 import org.linphone.core.ProxyConfig;
+import org.linphone.core.RegistrationState;
 import org.linphone.core.TransportType;
 import org.linphone.core.Transports;
 
@@ -152,6 +154,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private ScheduledExecutorService scheduledThreadPool;
 
     private UpdateAppManager updateAppManager;
+
+    // 一键报警
+    private AccountCreator mAccountCreator ;
+    private Button bt_alarm;
+    private CoreListenerStub mCoreListener;
 
     private Handler myHandler = new Handler() {
         @Override
@@ -277,6 +284,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
+      //  mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
+
     /*   int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
        int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
         float density =  Resources.getSystem().getDisplayMetrics().density;
@@ -298,12 +307,35 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 初始化人脸识别
         initFaceRecognition();
 
-        // 开启 Ftp 服务器
+   /*     // 开启 Ftp 服务器
         startFtpService();
+        // 一键报警
+        aKeyAlarm();
+        // 开启视频通话服务
+        startLinphoneService();*/
 
 
+
+
+        /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
+        openAPKFile(MainActivity.this, path);*/
+
+
+
+
+   /*     File updateDir = new File(Environment.getExternalStorageDirectory(),
+                "app-debug.apk");
+        try {
+            updateDir.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+    }
+
+    private void aKeyAlarm() {
         // 一键报警测试
-        Button bt_alarm = this.findViewById(R.id.bt_AKeyAlarm);
+        bt_alarm = this.findViewById(R.id.bt_AKeyAlarm);
         bt_alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -323,21 +355,20 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
 
-
-     /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
-        openAPKFile(MainActivity.this, path);*/
-
-
-
-
-   /*     File updateDir = new File(Environment.getExternalStorageDirectory(),
-                "app-debug.apk");
-        try {
-            updateDir.createNewFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
+        mCoreListener = new CoreListenerStub() {
+            @Override
+            public void onRegistrationStateChanged(Core core, ProxyConfig cfg, RegistrationState state, String message) {
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> state = " + state);
+                if (state == RegistrationState.Ok) {
+                    bt_alarm.setText("服务中心连接状态：已连接");
+                } else if (state == RegistrationState.Failed) {
+                    bt_alarm.setText("服务中心连接状态：未连接");
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> 一键报警连接客户中心失败 " + message);
+                }
+            }
+        };
+        // 添加监听
+        LinphoneService.getCore().addListener(mCoreListener);
     }
 
     public String getAdConfig(File filePath) {
@@ -428,26 +459,63 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         //  checkPermissionCamera();
 
 
-        // 验证存储权限
-        verifyStoragePermissions(this);
-
-
-
 
     }
+
+    private void checkAndRequestCallPermissions() {
+        ArrayList<String> permissionsList = new ArrayList<>();
+
+        // Some required permissions needs to be validated manually by the user
+        // Here we ask for record audio and camera to be able to make video calls with sound
+        // Once granted we don't have to ask them again, but if denied we can
+
+        //检测是否有写的权限
+        int permission = getPackageManager().checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getPackageName());
+
+        // 音频权限
+        int recordAudio = getPackageManager().checkPermission(Manifest.permission.RECORD_AUDIO, getPackageName());
+
+        // 相机权限
+        int camera = getPackageManager().checkPermission(Manifest.permission.CAMERA, getPackageName());
+
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (recordAudio != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(Manifest.permission.RECORD_AUDIO);
+        }
+
+        if (camera != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(Manifest.permission.CAMERA);
+        }
+
+        if (permissionsList.size() > 0) {
+            String[] permissions = new String[permissionsList.size()];
+            permissions = permissionsList.toArray(permissions);
+            ActivityCompat.requestPermissions(this, permissions, 99);
+        }
+    }
+
+
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        // 开启视频通话服务（一键报警功能）
-        if (!LinphoneService.isReady()) {
-            // If it's not, let's start it
-            startService(new Intent().setClass(this, LinphoneService.class));
-            // And wait for it to be ready, so we can safely use it afterwards
-            new ServiceWaitThread().start();
-        }
+
+        // 开启视频通话服务
+        startLinphoneService();
+        // 验证权限
+       // verifyStoragePermissions(this);
+        checkAndRequestCallPermissions();
+
+
+
+
     }
+
+
 
     // This thread will periodically check if the Service is ready, and then call onServiceReady
     private class ServiceWaitThread extends Thread {
@@ -470,8 +538,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     transports.setTcpPort(5060);
                     transports.setTlsPort(-1);
                     core.setTransports(transports);*/
-
-                AccountCreator mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
+                mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
                 mAccountCreator.setUsername("1000");
                 mAccountCreator.setPassword("1867668");
                 mAccountCreator.setDomain("120.26.216.74");
@@ -1000,19 +1067,34 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_CAMERA: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    finish();
+        if (requestCode == 99) {
 
-                } else {
-                    finish();
-                }
-                return;
+            // 开启 Ftp 服务器
+            startFtpService();
+
+            // 开启视频通话服务
+            startLinphoneService();
+            // 一键报警
+            aKeyAlarm();
+
+
+            for (int i = 0; i < permissions.length; i++) {
+                Log.e("MainActivity", "申请的权限为：" + permissions[i] + ",申请结果：" + grantResults[i]);
             }
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void startLinphoneService() {
+        // 开启视频通话服务（一键报警功能）
+        if (!LinphoneService.isReady()) {
+            // If it's not, let's start it
+            startService(new Intent().setClass(this, LinphoneService.class));
+            // And wait for it to be ready, so we can safely use it afterwards
+            new ServiceWaitThread().start();
+
+        }
+
+
     }
 
     //region 检查权限
