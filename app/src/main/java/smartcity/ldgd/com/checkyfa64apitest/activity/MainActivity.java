@@ -692,10 +692,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 删除人脸识别文件夹下的所有文件
         deleteDirWihtFile(new File(ficeFile));
 
-      /*  ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
-        if (proxyConfig != null) {
-            upLinphoneStart(proxyConfig.getState());
-        }*/
+        // 更新一键报警连接状态
+        if(LinphoneService.isReady()){
+            ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
+            if (proxyConfig != null) {
+                upLinphoneStart(proxyConfig.getState());
+            }
+        }
 
 
     }
