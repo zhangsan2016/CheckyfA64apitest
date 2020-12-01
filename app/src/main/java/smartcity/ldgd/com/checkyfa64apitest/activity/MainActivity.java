@@ -307,6 +307,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 初始化人脸识别
         initFaceRecognition();
 
+
+        // 开启视频通话服务
+        startLinphoneService();
+
+        // 一键报警
+        aKeyAlarm();
+
    /*     // 开启 Ftp 服务器
         startFtpService();
         // 一键报警
@@ -341,10 +348,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             public void onClick(View v) {
                 Core core = LinphoneService.getCore();
                 if(core != null){
-                    Address addressToCall = core.interpretUrl("1010");
+                    Address addressToCall = core.interpretUrl("1012");
                     CallParams params = core.createCallParams(null);
 
-                    params.enableVideo(true);
+                    params.enableVideo(false);
                     if (addressToCall != null) {
                         core.inviteAddressWithParams(addressToCall, params);
                     }
@@ -358,18 +365,25 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mCoreListener = new CoreListenerStub() {
             @Override
             public void onRegistrationStateChanged(Core core, ProxyConfig cfg, RegistrationState state, String message) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> state = " + state);
-                if (state == RegistrationState.Ok) {
-                    bt_alarm.setText("服务中心连接状态：已连接");
-                } else if (state == RegistrationState.Failed) {
-                    bt_alarm.setText("服务中心连接状态：未连接");
-                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> 一键报警连接客户中心失败 " + message);
-                }
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> onRegistrationStateChanged state = " + state);
+                upLinphoneStart(state);
             }
         };
-        // 添加监听
-        LinphoneService.getCore().addListener(mCoreListener);
+
+
     }
+
+    private void upLinphoneStart(RegistrationState state) {
+
+        bt_alarm.setText(state + "");
+       /* if (state == RegistrationState.Ok) {
+            bt_alarm.setText("服务中心连接状态：已连接");
+        } else if (state == RegistrationState.Failed) {
+            bt_alarm.setText("服务中心连接状态：未连接");
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> 一键报警连接客户中心失败 " );
+        }*/
+    }
+
 
     public String getAdConfig(File filePath) {
 
@@ -504,8 +518,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onStart();
 
 
-        // 开启视频通话服务
-        startLinphoneService();
         // 验证权限
        // verifyStoragePermissions(this);
         checkAndRequestCallPermissions();
@@ -520,6 +532,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     // This thread will periodically check if the Service is ready, and then call onServiceReady
     private class ServiceWaitThread extends Thread {
         public void run() {
+
             while (!LinphoneService.isReady()) {
                 try {
                     sleep(1000);
@@ -527,6 +540,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     throw new RuntimeException("waiting thread sleep() has been interrupted");
                 }
             }
+
+            // 添加监听
+            LinphoneService.getCore().addListener(mCoreListener);
 
             // 登录linphone帐号
             ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
@@ -541,14 +557,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
                 mAccountCreator.setUsername("1000");
                 mAccountCreator.setPassword("1867668");
-                mAccountCreator.setDomain("120.26.216.74");
+                mAccountCreator.setDomain("120.26.216.74:16384");
                 mAccountCreator.setTransport(TransportType.Udp);
                 // This will automatically create the proxy config and auth info and add them to the Core
                 ProxyConfig cfg = mAccountCreator.createProxyConfig();
                 // Make sure the newly created one is the default
                 LinphoneService.getCore().setDefaultProxyConfig(cfg);
+                // 添加监听
+
 
             }
+
 
         }
     }
@@ -672,6 +691,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         // 删除人脸识别文件夹下的所有文件
         deleteDirWihtFile(new File(ficeFile));
+
+      /*  ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
+        if (proxyConfig != null) {
+            upLinphoneStart(proxyConfig.getState());
+        }*/
+
 
     }
 
@@ -1074,8 +1099,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
             // 开启视频通话服务
             startLinphoneService();
-            // 一键报警
-            aKeyAlarm();
+
 
 
             for (int i = 0; i < permissions.length; i++) {
@@ -1093,7 +1117,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             new ServiceWaitThread().start();
 
         }
-
 
     }
 

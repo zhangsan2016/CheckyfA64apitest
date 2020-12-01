@@ -80,7 +80,8 @@ public class LinphoneService extends Service {
         mCoreListener = new CoreListenerStub() {
             @Override
             public void onCallStateChanged(Core core, Call call, Call.State state, String message) {
-                Toast.makeText(LinphoneService.this, message, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(LinphoneService.this, message + " "+ state, Toast.LENGTH_SHORT).show();
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + message + " state = "+ state);
 
                 if (state == Call.State.IncomingReceived) {
                     Toast.makeText(LinphoneService.this, "Incoming call received, answering it automatically", Toast.LENGTH_LONG).show();
