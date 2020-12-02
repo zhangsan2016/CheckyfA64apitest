@@ -46,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.linphone.core.AccountCreator;
 import org.linphone.core.Address;
+import org.linphone.core.Call;
 import org.linphone.core.CallParams;
 import org.linphone.core.Core;
 import org.linphone.core.CoreListenerStub;
@@ -76,6 +77,7 @@ import smartcity.ldgd.com.checkyfa64apitest.R;
 import smartcity.ldgd.com.checkyfa64apitest.camera.CameraManager;
 import smartcity.ldgd.com.checkyfa64apitest.entity.LdDevice;
 import smartcity.ldgd.com.checkyfa64apitest.services.LinphoneService;
+import smartcity.ldgd.com.checkyfa64apitest.util.AlarmClickHelper;
 import smartcity.ldgd.com.checkyfa64apitest.util.FaceRecoUtil;
 import smartcity.ldgd.com.checkyfa64apitest.util.FtpManager;
 import smartcity.ldgd.com.checkyfa64apitest.util.LogUtil;
@@ -346,18 +348,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         bt_alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Core core = LinphoneService.getCore();
-                if(core != null){
-                    Address addressToCall = core.interpretUrl("1012");
-                    CallParams params = core.createCallParams(null);
-
-                    params.enableVideo(false);
-                    if (addressToCall != null) {
-                        core.inviteAddressWithParams(addressToCall, params);
-                    }
-                }else{
-                    Toast.makeText(MainActivity.this, "网路连接失败，请联系管理员！", Toast.LENGTH_SHORT).show();
-                }
+                Alarm();
 
             }
         });
@@ -365,23 +356,85 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mCoreListener = new CoreListenerStub() {
             @Override
             public void onRegistrationStateChanged(Core core, ProxyConfig cfg, RegistrationState state, String message) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> onRegistrationStateChanged state = " + state);
                 upLinphoneStart(state);
             }
+
+            @Override
+            public void onCallStateChanged(Core core, Call call, Call.State state, String message) {
+                // Toast.makeText(LinphoneService.this, message + " "+ state, Toast.LENGTH_SHORT).show();
+
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> onCallStateChanged " + state);
+
+                if (state == Call.State.IncomingReceived) {
+                    // 接收电话，自动接听
+                    CallParams params = LinphoneService.getCore().createCallParams(call);
+                    params.enableVideo(false);
+                    call.acceptWithParams(params);
+                }else if (state == Call.State.OutgoingInit) {
+                    // 拨出电话
+                    bt_alarm.setText(  "与服务中心通连接中...");
+                }else if (state == Call.State.OutgoingProgress ) {
+                    // 电话拨出中
+                    bt_alarm.setText(  "正在拨打客户中心号码，请稍后...");
+                }else if (state == Call.State.StreamsRunning ) {
+                    // 接通中
+                    bt_alarm.setText(  "与服务中心通话中...");
+                }else if (state == Call.State.End ) {
+                    // 通话结束
+                    ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
+                    if (proxyConfig != null) {
+                        upLinphoneStart(proxyConfig.getState());
+                    }
+                }
+
+
+
+
+              /*  else if (state == Call.State.Connected) {
+                    // 与服务中心连接中
+                    bt_alarm.setText(state + "与服务中心通话中...");
+                }else if (state == Call.State.End) {
+                    //   bt_alarm.setText("服务中心连接状态：已连接");
+                }else if (state == Call.State.Error) {
+                    // bt_alarm.setText("服务中心连接状态：未连接");
+                }else if (state == Call.State.OutgoingInit) {
+                    bt_alarm.setText(state + "正在拨打客户中心号码，请稍后...");
+                }*/
+            }
+
         };
 
 
     }
 
+    private  void Alarm(){
+
+        if (AlarmClickHelper.isFastDoubleClick()) {//连续点击
+            return;
+        }
+        Core core = LinphoneService.getCore();
+        if(core != null){
+            Address addressToCall = core.interpretUrl("1012");
+            CallParams params = core.createCallParams(null);
+
+            params.enableVideo(false);
+            if (addressToCall != null) {
+                core.inviteAddressWithParams(addressToCall, params);
+            }
+        }else{
+            Toast.makeText(MainActivity.this, "客户中心连接失败，请联系管理员！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void upLinphoneStart(RegistrationState state) {
 
-        bt_alarm.setText(state + "");
-       /* if (state == RegistrationState.Ok) {
+        if (state == RegistrationState.Ok) {
             bt_alarm.setText("服务中心连接状态：已连接");
         } else if (state == RegistrationState.Failed) {
             bt_alarm.setText("服务中心连接状态：未连接");
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> 一键报警连接客户中心失败 " );
-        }*/
+        }else if (state == RegistrationState.None) {
+            bt_alarm.setText("服务中心连接状态：连接失败");
+        }
     }
 
 
@@ -698,6 +751,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             if (proxyConfig != null) {
                 upLinphoneStart(proxyConfig.getState());
             }
+        }else{
+            bt_alarm.setText("服务中心连接状态：未连接");
         }
 
 

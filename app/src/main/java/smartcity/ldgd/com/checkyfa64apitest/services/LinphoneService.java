@@ -77,17 +77,16 @@ public class LinphoneService extends Service {
 
         mHandler = new Handler();
         // This will be our main Core listener, it will change activities depending on events
-        mCoreListener = new CoreListenerStub() {
+      /*  mCoreListener = new CoreListenerStub() {
             @Override
             public void onCallStateChanged(Core core, Call call, Call.State state, String message) {
                // Toast.makeText(LinphoneService.this, message + " "+ state, Toast.LENGTH_SHORT).show();
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + message + " state = "+ state);
 
                 if (state == Call.State.IncomingReceived) {
                     Toast.makeText(LinphoneService.this, "Incoming call received, answering it automatically", Toast.LENGTH_LONG).show();
                     // For this sample we will automatically answer incoming calls
                     CallParams params = getCore().createCallParams(call);
-                    params.enableVideo(true);
+                    params.enableVideo(false);
                     call.acceptWithParams(params);
                 } else if (state == Call.State.Connected) {
                     // This stats means the call has been established, let's start the call activity
@@ -97,7 +96,7 @@ public class LinphoneService extends Service {
                     startActivity(intent);
                 }
             }
-        };
+        };*/
 
         try {
             // Let's copy some RAW resources to the device
