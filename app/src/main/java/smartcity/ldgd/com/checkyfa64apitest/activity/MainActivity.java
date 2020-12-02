@@ -348,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         bt_alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Alarm();
 
             }
@@ -408,6 +409,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private  void Alarm(){
+        ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
+        if (proxyConfig == null || proxyConfig.getState() == RegistrationState.None) {
+            Toast.makeText(MainActivity.this, "客户中心连接失败，请联系管理员！", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (AlarmClickHelper.isFastDoubleClick()) {//连续点击
             return;
