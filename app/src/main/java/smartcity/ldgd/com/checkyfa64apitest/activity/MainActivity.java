@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -316,6 +317,25 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 一键报警
         aKeyAlarm();
 
+       /* myHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+                parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
+
+
+                *//*runOnUiThread(new Runnable() {
+                    public void run() {
+
+                    }
+                });*//*
+
+            }
+        }, 3000);//3秒后执行Runnable中的run方法*/
+
+
+
    /*     // 开启 Ftp 服务器
         startFtpService();
         // 一键报警
@@ -411,7 +431,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private  void Alarm(){
         ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
         if (proxyConfig == null || proxyConfig.getState() == RegistrationState.None) {
+
+            Looper.prepare();
             Toast.makeText(MainActivity.this, "客户中心连接失败，请联系管理员！", Toast.LENGTH_SHORT).show();
+            Looper.loop();
+
             return;
         }
 
@@ -420,7 +444,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         Core core = LinphoneService.getCore();
         if(core != null){
-            Address addressToCall = core.interpretUrl("1012");
+          //  Address addressToCall = core.interpretUrl("1012");
+            Address addressToCall = core.interpretUrl("1000");
             CallParams params = core.createCallParams(null);
 
             params.enableVideo(false);
@@ -614,7 +639,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     transports.setTlsPort(-1);
                     core.setTransports(transports);*/
                 mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
-                mAccountCreator.setUsername("1000");
+                mAccountCreator.setUsername("1001");
                 mAccountCreator.setPassword("1867668");
                 mAccountCreator.setDomain("120.26.216.74:16384");
                 mAccountCreator.setTransport(TransportType.Udp);
@@ -973,10 +998,20 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 } else if (buffer[2] == 2) {
                     LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
+                    myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
+                    myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+                    //   myHandler.removeCallbacksAndMessages(null);
+                    myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 20000);
+
+                    // 一键报警
+                    Alarm();
+
+
+                   /* LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
                     myHandler.removeMessages(STOP_FINGERPRINTVIEW);
                     myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
                     //   myHandler.removeCallbacksAndMessages(null);
-                    myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 2800);
+                    myHandler.sendEmptyMessageDelayed(STOP_FINGERPRINTVIEW, 2800);*/
                 }
             }
         }).start();
