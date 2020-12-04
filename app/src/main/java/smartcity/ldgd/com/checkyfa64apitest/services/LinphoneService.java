@@ -111,7 +111,7 @@ public class LinphoneService extends Service {
         // Create the Core and add our listener
         mCore = Factory.instance()
                 .createCore(basePath + "/.linphonerc", basePath + "/linphonerc", this);
-        mCore.addListener(mCoreListener);
+       // mCore.addListener(mCoreListener);
         // Core is ready to be configured
         configureCore();
     }

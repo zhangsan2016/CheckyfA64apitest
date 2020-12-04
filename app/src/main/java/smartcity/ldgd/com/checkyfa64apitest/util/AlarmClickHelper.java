@@ -14,7 +14,7 @@ public class AlarmClickHelper {
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();
         long timeD = time - lastClickTime;
-        if (0 < timeD && timeD < 30000) {
+        if (0 < timeD && timeD < 10000) {
             return true;
         }
         lastClickTime = time;

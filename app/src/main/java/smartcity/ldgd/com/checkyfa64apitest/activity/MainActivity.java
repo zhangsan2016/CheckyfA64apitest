@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -182,6 +183,24 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         // 隐藏其他界面
                         deviceAndCameraView.setVisibility(View.GONE);
 
+                        // 一键报警功能修改如下
+                        myHandler.postDelayed(new Runnable(){
+
+                            public void run() {
+                                // 关闭指纹扫描
+                                myHandler.sendEmptyMessage(STOP_FINGERPRINTVIEW);
+                                // 启动视频界面
+                                myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
+                                myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+                                //   myHandler.removeCallbacksAndMessages(null);
+                                myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 60000);
+
+                                // 报警
+                                Alarm();
+                            }
+                        }, 2600);
+
+
                     }
                     break;
                 case STOP_DEVICE_AND_CAMERA:
@@ -295,6 +314,17 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         LogUtil.e("height = " + height + "   width = " + width + "    density = " + density );*/
 
 
+        //AudioManager实例对象调节当前音量
+        //获取最大音量和当前音量，参数：STREAM_VOICE_CALL（通话）、STREAM_SYSTEM（系统声音）、STREAM_RING（铃声）、STREAM_MUSIC（音乐）和STREAM_ALARM（闹铃）
+        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+        int current = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        if(current != 5){
+            audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 5, AudioManager.FLAG_SHOW_UI);
+        }
+        System.out.println(">>>>>>>>>>>>>>>>> max : current = " + max + " : " + current);
+
+
         // 初始化View
         initView();
 
@@ -317,22 +347,29 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 一键报警
         aKeyAlarm();
 
-       /* myHandler.postDelayed(new Runnable() {
+        myHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
 
 
-                parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
-
-
-                *//*runOnUiThread(new Runnable() {
+        /*        new Thread(new Runnable() {
+                    @Override
                     public void run() {
 
                     }
-                });*//*
+                }).start();*/
+                parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
+
+
+
+              /*  runOnUiThread(new Runnable() {
+                    public void run() {
+
+                    }
+                });*/
 
             }
-        }, 3000);//3秒后执行Runnable中的run方法*/
+        }, 3000);
 
 
 
@@ -408,9 +445,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     }
                 }
 
-
-
-
               /*  else if (state == Call.State.Connected) {
                     // 与服务中心连接中
                     bt_alarm.setText(state + "与服务中心通话中...");
@@ -422,7 +456,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     bt_alarm.setText(state + "正在拨打客户中心号码，请稍后...");
                 }*/
             }
-
         };
 
 
@@ -432,9 +465,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
         if (proxyConfig == null || proxyConfig.getState() == RegistrationState.None) {
 
-            Looper.prepare();
             Toast.makeText(MainActivity.this, "客户中心连接失败，请联系管理员！", Toast.LENGTH_SHORT).show();
-            Looper.loop();
 
             return;
         }
@@ -444,8 +475,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         Core core = LinphoneService.getCore();
         if(core != null){
-          //  Address addressToCall = core.interpretUrl("1012");
-            Address addressToCall = core.interpretUrl("1000");
+            Address addressToCall = core.interpretUrl("1012");
+          //  Address addressToCall = core.interpretUrl("1000");
             CallParams params = core.createCallParams(null);
 
             params.enableVideo(false);
@@ -612,7 +643,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
 
-
     // This thread will periodically check if the Service is ready, and then call onServiceReady
     private class ServiceWaitThread extends Thread {
         public void run() {
@@ -626,6 +656,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
 
             // 添加监听
+            LinphoneService.getCore().removeListener(mCoreListener);
             LinphoneService.getCore().addListener(mCoreListener);
 
             // 登录linphone帐号
@@ -778,6 +809,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         // 更新一键报警连接状态
         if(LinphoneService.isReady()){
+
+            // 添加监听
+               LinphoneService.getCore().removeListener(mCoreListener);
+               LinphoneService.getCore().addListener(mCoreListener);
+
             ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
             if (proxyConfig != null) {
                 upLinphoneStart(proxyConfig.getState());
@@ -868,9 +904,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         //参数第一次执行时间，间隔执行时间,执行时间单位
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // 移除一键报警监听
+        LinphoneService.getCore().removeListener(mCoreListener);
+
         openSerialPort = false;
         // 关闭跟新程序
         if (updateAppManager != null) {
@@ -998,13 +1039,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 } else if (buffer[2] == 2) {
                     LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
-                    myHandler.removeMessages(STOP_DEVICE_AND_CAMERA);
-                    myHandler.sendEmptyMessage(START_DEVICE_AND_CAMERA);
+                    myHandler.removeMessages(STOP_FINGERPRINTVIEW);
+                    myHandler.sendEmptyMessage(START_FINGERPRINTVIEW);
                     //   myHandler.removeCallbacksAndMessages(null);
-                    myHandler.sendEmptyMessageDelayed(STOP_DEVICE_AND_CAMERA, 20000);
 
-                    // 一键报警
-                    Alarm();
 
 
                    /* LogUtil.e(" 指纹采集 = " + Arrays.toString(buffer));
