@@ -223,9 +223,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         fingerprintView.setVisibility(View.GONE);
 
                         // 重新开启摄像头
-                        if (!videoView.isPlaying()){
+                        /*if (!videoView.isPlaying()){
                             startFaceTheCamera();
-                        }
+                        }*/
 
 
 
@@ -299,11 +299,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // 去掉窗口标题
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // 隐藏顶部的状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
         setContentView(R.layout.activity_main);
 
       //  mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
@@ -799,7 +801,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onResume();
 
         // 启动人脸镜头
-        startFaceTheCamera();
+      //  startFaceTheCamera();
+        // 初始化摄像头
+          initCamera();
 
         // 检测更新
         CheckForUpdates();
@@ -1186,12 +1190,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     //region 初始化和回收相关资源
     private void initCamera() {
 
+
         // 初始化相机
         mHolder = scanPreview.getHolder();
         mCameraManager = new CameraManager(getApplication());
         mHolder.addCallback(this);
         //    mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        mCamera = Camera.open();
+        //mCamera = Camera.open();
+        mCamera = Camera.open(0);
    /*     Camera.Parameters p = mCamera.getParameters();
         //  p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         p.setPictureSize(352, 288);
@@ -1216,6 +1222,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
 
     }
+
+
 
 
     private void releaseCamera() {
@@ -1316,7 +1324,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void surfaceCreated(SurfaceHolder holder) {
 
         try {
-            mCameraManager.openDriver(holder);
+          //  mCameraManager.openDriver(holder);
+
+            //1 为前置摄像头
+            //0 为后置摄像头
+            mCamera = Camera.open(0);
+            mCamera.setPreviewDisplay(holder);
+            mCamera.startPreview(); // 预览
+
         } catch (IOException e) {
             e.printStackTrace();
         }
