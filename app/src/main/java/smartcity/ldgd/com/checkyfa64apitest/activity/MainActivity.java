@@ -225,9 +225,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         fingerprintView.setVisibility(View.GONE);
 
                         // 重新开启摄像头
-                        /*if (!videoView.isPlaying()){
+                        if (!videoView.isPlaying()){
                             startFaceTheCamera();
-                        }*/
+                        }
 
 
 
@@ -365,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                     }
                 }).start();*/
-                parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
+           //     parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
 
 
 
@@ -482,8 +482,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         Core core = LinphoneService.getCore();
         if(core != null){
-            Address addressToCall = core.interpretUrl("1012");
-          //  Address addressToCall = core.interpretUrl("1000");
+        //    Address addressToCall = core.interpretUrl("1012");
+            Address addressToCall = core.interpretUrl("1000");
             CallParams params = core.createCallParams(null);
 
             params.enableVideo(false);
@@ -809,9 +809,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onResume();
 
         // 启动人脸镜头
-      //  startFaceTheCamera();
+        startFaceTheCamera();
         // 初始化摄像头
-          initCamera();
+       //   initCamera();
 
         // 检测更新
         CheckForUpdates();
