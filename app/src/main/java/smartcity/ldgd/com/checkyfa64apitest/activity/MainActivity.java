@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -52,6 +53,7 @@ import org.linphone.core.Call;
 import org.linphone.core.CallParams;
 import org.linphone.core.Core;
 import org.linphone.core.CoreListenerStub;
+import org.linphone.core.MediaDirection;
 import org.linphone.core.ProxyConfig;
 import org.linphone.core.RegistrationState;
 import org.linphone.core.TransportType;
@@ -321,6 +323,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
         int current = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        AudioDeviceInfo[] aa = audioManager.getDevices(audioManager.GET_DEVICES_OUTPUTS);
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+
         if(current != 5){
             audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 5, AudioManager.FLAG_SHOW_UI);
         }
@@ -482,6 +487,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             CallParams params = core.createCallParams(null);
 
             params.enableVideo(false);
+
+            MediaDirection md = params.getAudioDirection();
+
             if (addressToCall != null) {
                 core.inviteAddressWithParams(addressToCall, params);
             }
@@ -915,6 +923,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         // 移除一键报警监听
         LinphoneService.getCore().removeListener(mCoreListener);
+        this.stopService( new Intent(this,LinphoneService.class));
 
         openSerialPort = false;
         // 关闭跟新程序
@@ -1197,13 +1206,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mHolder.addCallback(this);
         //    mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         //mCamera = Camera.open();
-        mCamera = Camera.open(0);
+      //  mCamera = Camera.open(0);
    /*     Camera.Parameters p = mCamera.getParameters();
         //  p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         p.setPictureSize(352, 288);
         mCamera.setParameters(p);*/
 
         try {
+            mCamera = Camera.open(0);
             mCamera.setPreviewDisplay(mHolder);
 
             Thread.sleep(2000);
@@ -1218,6 +1228,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1333,6 +1346,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             mCamera.startPreview(); // 预览
 
         } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
