@@ -51,14 +51,14 @@
                 android:visibility="visible" />
         </RelativeLayout>
 
-
+        <!--android:text="       您好,正在连接应急中心,为了保证求助信息真实性您的个人信息已存证（人脸、指纹）"-->
         <TextView
             android:id="@+id/tv_warm_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/capture_crop_view"
             android:padding="30dp"
-            android:text="       您好,正在连接应急中心,为了保证求助信息真实性您的个人信息已存证（人脸、指纹）"
+            android:text="       本次呼叫会采集您生物识别信息（指纹、人脸、人体等影像信息）作为呼叫存证。）"
             android:textColor="@android:color/holo_red_dark"
             android:textSize="16sp" />
 
