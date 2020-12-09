@@ -359,12 +359,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             public void run() {
 
 
-        /*        new Thread(new Runnable() {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-
+                     //   parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
                     }
-                }).start();*/
+                }).start();
            //     parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
 
 
@@ -438,12 +438,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }else if (state == Call.State.OutgoingInit) {
                     // 拨出电话
                     bt_alarm.setText(  "与服务中心通连接中...");
+                    bt_alarm.setTextColor(getResources().getColor(R.color.colorAccent));
                 }else if (state == Call.State.OutgoingProgress ) {
                     // 电话拨出中
-                    bt_alarm.setText(  "正在拨打客户中心号码，请稍后...");
+                    bt_alarm.setText(  "正在连接应急中心请等待...");
                 }else if (state == Call.State.StreamsRunning ) {
                     // 接通中
-                    bt_alarm.setText(  "与服务中心通话中...");
+                    bt_alarm.setText(  "与服应急中心通话中...");
                 }else if (state == Call.State.End ) {
                     // 通话结束
                     ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
@@ -498,15 +499,24 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
-    private void upLinphoneStart(RegistrationState state) {
+    private void upLinphoneStart(final RegistrationState state) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>> upLinphoneStart " + state);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (state == RegistrationState.Ok) {
+                    bt_alarm.setText("服务中心连接状态：已连接");
+                } else if (state == RegistrationState.Failed) {
+                    bt_alarm.setText("服务中心连接状态：未连接");
+                }else if (state == RegistrationState.None) {
+                    bt_alarm.setText("服务中心连接状态：连接失败");
+                }else{
+                    bt_alarm.setText("服务中心连接状态：未连接");
+                }
+                bt_alarm.setTextColor(getResources().getColor(R.color.colorProgressBg));
+            }
+        });
 
-        if (state == RegistrationState.Ok) {
-            bt_alarm.setText("服务中心连接状态：已连接");
-        } else if (state == RegistrationState.Failed) {
-            bt_alarm.setText("服务中心连接状态：未连接");
-        }else if (state == RegistrationState.None) {
-            bt_alarm.setText("服务中心连接状态：连接失败");
-        }
     }
 
 
@@ -669,6 +679,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             LinphoneService.getCore().removeListener(mCoreListener);
             LinphoneService.getCore().addListener(mCoreListener);
 
+
             // 登录linphone帐号
             ProxyConfig proxyConfig = LinphoneService.getCore().getDefaultProxyConfig();
             if (proxyConfig == null) {
@@ -689,8 +700,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 // Make sure the newly created one is the default
                 LinphoneService.getCore().setDefaultProxyConfig(cfg);
                 // 添加监听
-
-
+            }else {
+                upLinphoneStart(proxyConfig.getState());
             }
 
 
