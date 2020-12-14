@@ -39,6 +39,7 @@ public class LinphoneService extends Service {
     private Timer mTimer;
 
     private Core mCore;
+    private Call.State callState;
     private CoreListenerStub mCoreListener;
 
     public static boolean isReady() {
@@ -77,12 +78,12 @@ public class LinphoneService extends Service {
 
         mHandler = new Handler();
         // This will be our main Core listener, it will change activities depending on events
-      /*  mCoreListener = new CoreListenerStub() {
+        mCoreListener = new CoreListenerStub() {
             @Override
             public void onCallStateChanged(Core core, Call call, Call.State state, String message) {
-               // Toast.makeText(LinphoneService.this, message + " "+ state, Toast.LENGTH_SHORT).show();
 
-                if (state == Call.State.IncomingReceived) {
+                callState = state;
+                /*if (state == Call.State.IncomingReceived) {
                     Toast.makeText(LinphoneService.this, "Incoming call received, answering it automatically", Toast.LENGTH_LONG).show();
                     // For this sample we will automatically answer incoming calls
                     CallParams params = getCore().createCallParams(call);
@@ -94,9 +95,9 @@ public class LinphoneService extends Service {
                     // As it is the Service that is starting the activity, we have to give this flag
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                }
+                }*/
             }
-        };*/
+        };
 
         try {
             // Let's copy some RAW resources to the device
@@ -111,7 +112,7 @@ public class LinphoneService extends Service {
         // Create the Core and add our listener
         mCore = Factory.instance()
                 .createCore(basePath + "/.linphonerc", basePath + "/linphonerc", this);
-       // mCore.addListener(mCoreListener);
+        mCore.addListener(mCoreListener);
         // Core is ready to be configured
         configureCore();
     }
