@@ -493,8 +493,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         Core core = LinphoneService.getCore();
         if(core != null){
-            Address addressToCall = core.interpretUrl("1012");
-        //    Address addressToCall = core.interpretUrl("1000");
+       //     Address addressToCall = core.interpretUrl("1012");
+            Address addressToCall = core.interpretUrl("1000");
             CallParams params = core.createCallParams(null);
 
             params.enableVideo(false);
