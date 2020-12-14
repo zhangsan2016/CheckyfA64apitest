@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     bt_alarm.setText(  "正在连接应急中心请等待...");
                 }else if (state == Call.State.StreamsRunning ) {
                     // 接通中
-                    bt_alarm.setText(  "与服应急中心通话中...");
+                    bt_alarm.setText(  "与应急中心通话中...");
                     bt_alarm.setTextColor(getResources().getColor(R.color.colorAccent));
                 }else if (state == Call.State.End ) {
                     // 通话结束
@@ -493,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         Core core = LinphoneService.getCore();
         if(core != null){
-       //     Address addressToCall = core.interpretUrl("1012");
+        //    Address addressToCall = core.interpretUrl("1012");
             Address addressToCall = core.interpretUrl("1000");
             CallParams params = core.createCallParams(null);
 
