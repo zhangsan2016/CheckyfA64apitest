@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
+                      //  parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
                     }
                 }).start();
            //     parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
