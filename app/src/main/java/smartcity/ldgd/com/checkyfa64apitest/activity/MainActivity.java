@@ -1,6 +1,7 @@
 package smartcity.ldgd.com.checkyfa64apitest.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
@@ -166,6 +167,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private Button bt_alarm;
     private CoreListenerStub mCoreListener;
 
+
+ /*   private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            return false;
+        }
+    });*/
+    @SuppressLint("HandlerLeak")
     private Handler myHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -362,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                     //   parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
+                        parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
                     }
                 }).start();
            //     parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
@@ -818,6 +827,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onResume() {
         super.onResume();
+
 
         // 启动人脸镜头
         startFaceTheCamera();
