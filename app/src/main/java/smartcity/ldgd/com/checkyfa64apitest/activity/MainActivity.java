@@ -356,6 +356,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 初始化人脸识别
         initFaceRecognition();
 
+        // 开启 Ftp 服务器
+        startFtpService();
 
         // 开启视频通话服务
         startLinphoneService();
@@ -376,14 +378,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }).start();
            //     parseBytes(new byte[]{5,2,2,4,6,7,0,0,0,0,0});
 
-
-
-              /*  runOnUiThread(new Runnable() {
-                    public void run() {
-
-                    }
-                });*/
-
             }
         }, 3000);
 
@@ -399,11 +393,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
 
+
         /*  String path = Environment.getExternalStorageDirectory()+ "/" + "app-debug.apk";
         openAPKFile(MainActivity.this, path);*/
-
-
-
 
    /*     File updateDir = new File(Environment.getExternalStorageDirectory(),
                 "app-debug.apk");
@@ -1275,7 +1267,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (requestCode == 99) {
 
             // 开启 Ftp 服务器
-            startFtpService();
+          //  startFtpService();
 
             // 开启视频通话服务
             startLinphoneService();
