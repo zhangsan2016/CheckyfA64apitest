@@ -356,11 +356,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // 初始化人脸识别
         initFaceRecognition();
 
-        // 开启 Ftp 服务器
-        startFtpService();
-
-        // 开启视频通话服务
-        startLinphoneService();
+        // 判断当前是否具有读写权限，有才执行
+        if (getPackageManager().checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+            // 开启 Ftp 服务器
+            startFtpService();
+            // 开启视频通话服务
+            startLinphoneService();
+        }
 
         // 一键报警
         aKeyAlarm();
@@ -1267,7 +1269,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (requestCode == 99) {
 
             // 开启 Ftp 服务器
-          //  startFtpService();
+            startFtpService();
 
             // 开启视频通话服务
             startLinphoneService();
