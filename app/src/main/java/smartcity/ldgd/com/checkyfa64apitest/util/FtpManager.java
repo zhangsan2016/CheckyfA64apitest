@@ -7,17 +7,20 @@ import android.widget.TextView;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,11 +118,24 @@ public class FtpManager {
 
        // 添加 ftp 用户
         try {
+
+
+
+
             // 账户信息（也可以新增用户）
             UserManager userManager = userManagerFactory.createUserManager();
             BaseUser  francis  = new BaseUser(userManager.getUserByName("admin"));
             francis.setPassword("francis");
             francis.setName("francis");
+            francis.setEnabled(true);
+            /* francis.setMaxIdleTime(300000);*/
+            francis.setHomeDirectory( Environment.getExternalStorageDirectory().getAbsolutePath());
+
+            List<Authority> authorities = new ArrayList<Authority>();
+            authorities.add(new WritePermission());
+            francis.setAuthorities(authorities);
+
+
             userManager.save(francis); // 修改账户信息
         } catch (FtpException e) {
             e.printStackTrace();

@@ -61,6 +61,7 @@ import org.linphone.core.TransportType;
 import org.linphone.core.Transports;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -307,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -319,7 +321,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         setContentView(R.layout.activity_main);
 
-      //  mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
+
+
+        //  mAccountCreator = LinphoneService.getCore().createAccountCreator(null);
 
     /*   int height =  Resources.getSystem().getDisplayMetrics().heightPixels;
        int width =  Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -942,7 +946,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.stopService( new Intent(this,LinphoneService.class));
 
         openSerialPort = false;
-        // 关闭跟新程序
+        // 关闭更新程序
         if (updateAppManager != null) {
             updateAppManager.setCancel(true);
         }
