@@ -125,7 +125,7 @@ public class FtpManager {
             francis.setPassword("francis");
             francis.setName("francis");
             francis.setEnabled(true);
-            /* francis.setMaxIdleTime(300000);*/
+            francis.setMaxIdleTime(3000);
             francis.setHomeDirectory( Environment.getExternalStorageDirectory().getAbsolutePath());
             // 添加权限
             List<Authority> authorities = new ArrayList<Authority>();
