@@ -119,9 +119,6 @@ public class FtpManager {
        // 添加 ftp 用户
         try {
 
-
-
-
             // 账户信息（也可以新增用户）
             UserManager userManager = userManagerFactory.createUserManager();
             BaseUser  francis  = new BaseUser(userManager.getUserByName("admin"));
