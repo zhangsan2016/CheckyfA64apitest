@@ -559,6 +559,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private void startFtpService() {
         String config = getString(R.string.users);
+        System.out.println("xxxxxxxxxxxxx " + config);
         FtpManager ftpManager = FtpManager.getInstance(config);
         ftpManager.startServer();
     }

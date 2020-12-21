@@ -71,6 +71,7 @@ public class FtpManager {
 
 
 
+
     /**
      * 创建服务器配置文件
      */
@@ -170,6 +171,7 @@ public class FtpManager {
         } else {
             // mHandler.sendEmptyMessage(0x0004);
         }
+        sInstance = null;
     }
 
     /**
